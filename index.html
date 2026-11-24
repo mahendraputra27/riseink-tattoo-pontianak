@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RiseInk Tattoo - V22 Login Kecil + Sistem V22 Full</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+input,select,textarea{outline:none} .tab-active{background:#111827;color:#fff}
+body{background:#0f0f0f}
+body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:-1}
+.logo-circle{width:90px;height:90px;border:3px solid #dc2626;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#000;color:#fff;box-shadow:0 0 20px rgba(220,38,38,0.5)}
+canvas{border:2px dashed #dc2626;background:#fff;border-radius:12px;width:100%;height:140px;touch-action:none}
+@page{size:A4;margin:12mm}
+/* LOGIN KECIL - PERSIS YANG KAMU MAU */
+.login-small{max-width:520px;margin:auto;padding:16px}
+.login-card{background:#1c1c1c;border:1px solid #333;border-radius:14px;padding:16px;color:#fff}
+.login-card input{background:#111;border:1px solid #444;color:#fff}
+.role-btn{width:100%;padding:14px;border-radius:10px;font-weight:700;margin-top:8px;cursor:pointer}
+.pin-box{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.pin-box input{width:44px;height:52px;text-align:center;font-size:22px;font-weight:800;padding:0;background:#111;color:#fff;border:1px solid #444;border-radius:10px}
+</style>
+</head>
+<body class="text-zinc-100">
+
+<!-- ========== PAGE LOGIN - TAMPILAN KECIL ========== -->
+<div id="loginPage">
+  <div class="login-small">
+    <div style="text-align:center;padding:14px;border-bottom:2px solid #ffcc00;background:#111;border-radius:14px 14px 0 0">
+      <h1 style="margin:0;color:#ffcc00;letter-spacing:2px">RISEINK TATTOO</h1>
+      <p style="margin:2px 0 0;font-size:12px;color:#aaa">V22 • Realtime • Pontianak</p>
+    </div>
+    <div class="login-card" style="border-radius:0 0 14px 14px">
+      <h2 style="margin:0 0 8px;font-size:18px;color:#fff">Login</h2>
+      <p style="font-size:12px;color:#aaa;line-height:1.5">Pilih peran 1 klik, lalu isi Username + Password. Password tidak ditampilkan.</p>
+      <button class="role-btn" style="background:#ffcc00;color:#000" onclick="clickRoleLogin('owner')">👑 OWNER</button>
+      <button class="role-btn" style="background:#333;color:#fff" onclick="clickRoleLogin('admin')">🛠️ ADMIN</button>
+      <button class="role-btn" style="background:#333;color:#fff" onclick="clickRoleLogin('tanel')">💼 MANAGER PONTIANAK (Tanel)</button>
+      <button class="role-btn" style="background:#333;color:#fff" onclick="clickRoleLogin('aldi')">💼 MANAGER SINTANG (Aldi)</button>
+
+      <!-- FORM ISI USER + PASS - MUNCUL SETELAH 1 KLIK -->
+      <div id="loginFormSmall" class="hidden" style="margin-top:14px">
+        <p><b id="loginRoleLabelSmall">Login</b></p>
+        <label style="font-size:13px;color:#ccc">Username</label>
+        <input id="loginUser" placeholder="Username" autocomplete="off" style="width:100%;padding:11px;border-radius:10px;margin:6px 0 10px">
+        <label style="font-size:13px;color:#ccc">Password</label>
+        <input id="loginPass" type="password" placeholder="Password" autocomplete="off" style="width:100%;padding:11px;border-radius:10px;margin:6px 0 10px">
+        <button class="role-btn" style="background:#ffcc00;color:#000" onclick="doLogin()">MASUK</button>
+        <button class="role-btn" style="background:#333;color:#fff" onclick="backToRolesSmall()">Kembali Pilih Role</button>
+      </div>
+      <p id="loginMsg" style="text-align:center;font-size:12px;color:#ff6b6b;font-weight:700;margin-top:10px"></p>
+      <p id="loginJamInfo" style="text-align:center;font-size:11px;color:#888;margin-top:4px"></p>
+    </div>
+
+    <!-- KODE OWNER 6 DIGIT -->
+    <div id="modalPinSmall" class="login-card hidden" style="margin-top:14px">
+      <h2 style="font-size:18px">🔐 Kode Owner 6 Digit</h2>
+      <p style="font-size:12px;color:#aaa">Masukkan kode 6 digit untuk membuka form login Owner.</p>
+      <div class="pin-box">
+        <input maxlength="1" inputmode="numeric" id="p1" oninput="nextPinSmall(this,'p2')"><input maxlength="1" inputmode="numeric" id="p2" oninput="nextPinSmall(this,'p3')"><input maxlength="1" inputmode="numeric" id="p3" oninput="nextPinSmall(this,'p4')"><input maxlength="1" inputmode="numeric" id="p4" oninput="nextPinSmall(this,'p5')"><input maxlength="1" inputmode="numeric" id="p5" oninput="nextPinSmall(this,'p6')"><input maxlength="1" inputmode="numeric" id="p6">
+      </div>
+      <button class="role-btn" style="background:#ffcc00;color:#000" onclick="checkOwnerPinSmall()">BUKA FORM OWNER</button>
+      <button class="role-btn" style="background:#333;color:#fff" onclick="closePinSmall()">Batal</button>
+      <p id="pinErrorSmall" style="font-size:12px;color:#ff6b6b"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ISI SISTEM V22 FULL - SETELAH LOGIN ========== -->
+<div id="appPage" class="hidden max-w-6xl mx-auto p-3 pb-24">
+  <div class="bg-white text-black rounded-2xl p-4 flex justify-between items-center">
+    <div class="flex gap-3 items-center">
+      <div class="w-12 h-12 rounded-full bg-black text-white flex flex-col items-center justify-center border-2 border-red-600 shrink-0"><span class="font-black text-[10px] leading-none">RISE</span><span class="font-black text-[10px] leading-none text-red-500">INK</span></div>
+      <div><h1 class="font-black tracking-widest leading-none">RISE<span class="text-red-600">INK</span> TATTOO</h1><p class="text-[10px] text-gray-500">Jl. H. Abbas 1 No.79, Benua Melayu Darat, Pontianak Selatan</p><p class="text-xs text-gray-500" id="userInfo"></p><p class="text-[11px] text-red-600 font-bold" id="sesiInfo"></p><p class="text-[11px] text-yellow-600 font-bold" id="idleInfo">Sisa aktif: 60:00</p></div>
+    </div>
+    <button onclick="logout()" class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shrink-0">LOGOUT</button>
+  </div>
+
+  <div id="ownerPinBox" class="hidden mt-3 bg-white text-black rounded-2xl p-4 border-2 border-yellow-400">
+    <h3 class="font-bold text-sm">🔐 PIN Owner - Edit & Hapus (Auto Kadaluarsa Setelah Dipakai)</h3>
+    <p class="text-[11px] text-gray-500">PIN ini hanya di akun Owner. Jika PIN sudah dipakai 1x untuk Edit / Hapus, PIN langsung hangus & otomatis ganti ke PIN baru.</p>
+    <div class="flex gap-2 mt-2 items-center flex-wrap">
+      <div class="bg-black text-white px-4 py-3 rounded-xl font-black text-2xl tracking-widest" id="pinDisplay">------</div>
+      <button onclick="buatPinAcak()" class="bg-yellow-400 px-4 py-3 rounded-xl font-bold text-sm">🎲 Buat PIN Acak 6 Digit Baru</button>
+      <button onclick="salinPin()" class="bg-gray-200 px-4 py-3 rounded-xl font-bold text-sm">📋 Salin PIN</button>
+      <span class="text-[11px] text-gray-500">Terakhir: <span id="pinWaktu">-</span> | Status: <span id="pinStatus" class="font-bold text-green-600">AKTIF</span></span>
+    </div>
+    <div class="mt-2"><label class="text-xs font-bold">Atau PIN Manual:</label><div class="flex gap-2 mt-1"><input id="pinManual" placeholder="Ketik PIN 6 digit" maxlength="6" class="border rounded-lg p-2 flex-1"><button onclick="setPinManual()" class="bg-black text-white px-4 rounded-xl font-bold text-sm">Simpan PIN Manual</button></div></div>
+  </div>
+
+  <div id="notifOwnerBox" class="hidden mt-3 bg-white text-black rounded-2xl p-4">
+    <div class="flex justify-between items-center"><h3 class="font-bold text-sm">🔔 Pemberitahuan - Admin / Manager Mencoba Edit / Hapus</h3><button onclick="hapusSemuaNotif()" class="bg-gray-200 px-3 py-1 rounded-lg text-xs font-bold">Hapus Semua</button></div>
+    <div id="listNotif" class="space-y-2 mt-2"></div>
+  </div>
+
+  <div id="notifAdminLoginBox" class="hidden mt-3 bg-green-600 text-white rounded-2xl p-4">
+    <h3 class="font-bold text-sm">🔔 Notifikasi - Admin Baru Saja Login</h3>
+    <p class="text-xs opacity-90">Setiap Admin login, notifikasi ini muncul di akun Owner & Manager.</p>
+    <div id="listAdminLoginNotif" class="space-y-2 mt-2"></div>
+    <button onclick="hapusNotifAdminLogin()" class="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-bold mt-2">Hapus Notifikasi Login Admin</button>
+  </div>
+
+  <div id="ownerStats" class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-3">
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">TOTAL CUSTOMER</p><b id="dTotal" class="text-xl">0</b></div>
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">TOTAL OMZET</p><b id="dOmzet" class="text-xl text-green-600">Rp 0</b></div>
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">PROFIT MANAGEMENT</p><b id="dProfit" class="text-xl text-blue-600">Rp 0</b></div>
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">TOTAL PENGELUARAN</p><b id="dPengeluaran" class="text-xl text-red-600">Rp 0</b></div>
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">SISA BERSIH</p><b id="dSisa" class="text-xl text-emerald-700">Rp 0</b></div>
+  </div>
+  <div id="ownerExtraStats" class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">TOTAL GAJI</p><b id="dGajiTotal" class="text-xl text-purple-600">Rp 0</b></div>
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">OMZET MINGGU INI</p><b id="dOmzetMinggu" class="text-xl">Rp 0</b></div>
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">OMZET BULAN INI</p><b id="dOmzetBulan" class="text-xl">Rp 0</b></div>
+    <div class="bg-white text-black rounded-xl p-3"><p class="text-[11px]">OMZET TAHUN INI</p><b id="dOmzetTahun" class="text-xl">Rp 0</b></div>
+  </div>
+
+  <div id="artisStatsBox" class="mt-3 bg-white text-black rounded-2xl p-3">
+    <h3 class="font-bold text-sm">📊 Detail Omzet & Profit Per Tattoo Artis</h3>
+    <div id="artisStats" class="grid md:grid-cols-2 gap-2 mt-2"></div>
+  </div>
+
+  <div id="warnBox" class="hidden mt-3"></div>
+  <div id="adminNotice" class="hidden bg-yellow-100 text-black rounded-xl p-3 mt-3 text-xs font-bold">⚠️ ADMIN DATA: Sesi aktif 1 jam tanpa edit / input. Setelah 1 jam otomatis logout. Print Surat akan menghapus TTD Virtual otomatis.</div>
+  <div id="managerNotice" class="hidden bg-blue-100 text-black rounded-xl p-3 mt-3 text-xs font-bold">💼 MANAGER: Bisa Input Surat Pernyataan Customer di slide baru. Wajib isi Sisa Pelunasan DP.</div>
+
+  <div id="afterSaveBox" class="hidden mt-3 bg-green-600 text-white rounded-2xl p-4">
+    <h3 class="font-bold">✅ Data Tersimpan di Database!</h3>
+    <p id="afterSaveInfo" class="text-xs mt-1"></p>
+    <div class="grid grid-cols-3 gap-2 mt-3">
+      <button onclick="printLastSurat()" class="bg-black text-white py-3 rounded-xl font-bold text-sm">🖨️ PRINT SURAT (TTD Auto Hapus)</button>
+      <button onclick="printLastInvoice()" class="bg-white text-black py-3 rounded-xl font-bold text-sm">🧾 PRINT INVOICE</button>
+      <button onclick="kirimUlangWA()" class="bg-green-800 text-white py-3 rounded-xl font-bold text-sm">💬 KIRIM ULANG WA DRAF SURAT</button>
+    </div>
+    <button onclick="tutupAfterSave()" class="w-full bg-white/20 py-2 rounded-xl text-xs mt-2">Tutup & Input Customer Baru Lagi</button>
+  </div>
+
+  <div class="flex gap-2 mt-3 flex-wrap">
+    <button onclick="showTab('input')" id="btnInput" class="flex-1 py-2.5 rounded-xl bg-white text-black font-bold text-sm tab-active">📝 INPUT CUSTOMER</button>
+    <button onclick="showTab('inputManager')" id="btnInputManager" class="flex-1 py-2.5 rounded-xl bg-white text-black font-bold text-sm">📝 INPUT SURAT PERNYATAAN (MANAGER)</button>
+    <button onclick="showTab('rekap')" id="btnRekap" class="flex-1 py-2.5 rounded-xl bg-white text-black font-bold text-sm">📊 REKAPAN</button>
+    <button onclick="showTab('pengeluaran')" id="btnPengeluaran" class="flex-1 py-2.5 rounded-xl bg-white text-black font-bold text-sm">💸 PENGELUARAN</button>
+    <button onclick="showTab('gaji')" id="btnGaji" class="flex-1 py-2.5 rounded-xl bg-white text-black font-bold text-sm">💰 GAJI & PERSENAN MANAGER</button>
+    <button onclick="showTab('absen')" id="btnAbsen" class="flex-1 py-2.5 rounded-xl bg-white text-black font-bold text-sm">📋 ABSEN KARYAWAN</button>
+  </div>
+
+  <div id="tabInput" class="mt-3">
+    <div class="bg-white text-black rounded-2xl p-4">
+      <h2 class="font-bold mb-1" id="formTitle">+ Input Customer Baru - Admin / Owner</h2>
+      <p id="roleNote" class="text-xs text-orange-600 mb-3 font-semibold"></p>
+      <input type="hidden" id="editId">
+      <div class="bg-gray-50 border rounded-xl p-3 mb-3">
+        <p class="font-bold text-sm mb-2">SAYA YANG BERTANDA TANGAN DI BAWAH INI :</p>
+        <div class="grid md:grid-cols-3 gap-2">
+          <div><label class="text-xs font-bold">Tanggal *</label><input id="tgl" type="date" onchange="updateResiByDate()" class="w-full border rounded-lg p-2" readonly></div>
+          <div><label class="text-xs font-bold">No. Resi (Otomatis 🔒)</label><input id="resi" readonly class="w-full border rounded-lg p-2 bg-gray-200 font-bold"></div>
+          <div><label class="text-xs font-bold">Nama Customer *</label><input id="nama" placeholder="Nama Lengkap" class="w-full border rounded-lg p-2"></div>
+          <div><label class="text-xs font-bold">Tanggal Lahir *</label><input id="tglLahir" type="date" class="w-full border rounded-lg p-2"></div>
+          <div><label class="text-xs font-bold">Nomor HP / WhatsApp (+62) *</label><div class="flex"><span class="bg-red-600 text-white text-xs font-bold px-3 flex items-center rounded-l-lg">+62</span><input id="hp" placeholder="8123456789" class="w-full border rounded-r-lg p-2" inputmode="numeric"></div></div>
+          <div><label class="text-xs font-bold">Alamat Email (Opsional)</label><input id="email" placeholder="customer@gmail.com" class="w-full border rounded-lg p-2"></div>
+          <div class="md:col-span-2"><label class="text-xs font-bold">Alamat</label><input id="alamat" placeholder="Alamat lengkap customer" class="w-full border rounded-lg p-2"></div>
+          <div><label class="text-xs font-bold">Harga Tattoo (Rp) *</label><div class="flex"><span class="bg-yellow-400 text-black text-xs font-bold px-3 flex items-center rounded-l-lg">Rp.</span><input id="harga" type="number" oninput="hitungPersen();onHargaOrTagihanChange()" placeholder="1000000" class="w-full border rounded-r-lg p-2"></div></div>
+          <div><label class="text-xs font-bold">Tattoo Artis *</label><select id="artis" class="w-full border rounded-lg p-2 font-bold"><option value="">-- Pilih Tattoo Artis --</option><option>Joe</option><option>Lipang</option><option>Mazmur</option><option>Rio</option><option>Doni</option><option>Yoga</option><option>Ivo</option></select></div>
+          <div><label class="text-xs font-bold">BackUp Artis</label><select id="backup" class="w-full border rounded-lg p-2"><option value="">-- Tidak Ada Backup --</option><option>Hadi</option><option>Rere</option><option>Tanel</option><option>Aldi</option></select></div>
+          <div><label class="text-xs font-bold">Jenis / Bagian Tattoo</label><input id="jenis" placeholder="Ex: Lengan Kanan - Naga" class="w-full border rounded-lg p-2"></div>
+          <div><label class="text-xs font-bold">Status Tagihan *</label><select id="tagihan" onchange="onHargaOrTagihanChange()" class="w-full border rounded-lg p-2 font-bold"><option value="BELUM BAYAR">BELUM BAYAR - TIDAK BISA SIMPAN</option><option value="DP">DP - Wajib Bayar DP</option><option value="LUNAS">LUNAS - DP Auto = Harga</option></select><p id="tagihanWarn" class="text-[11px] font-bold mt-1"></p></div>
+          <div><label class="text-xs font-bold">DP Sudah Dibayar (Rp)</label><div class="flex"><span class="bg-yellow-400 text-black text-xs font-bold px-3 flex items-center rounded-l-lg">Rp.</span><input id="dpBayar" type="number" oninput="hitungSisa()" placeholder="300000" value="0" class="w-full border rounded-r-lg p-2"></div><p id="sisaInfo" class="text-[11px] text-orange-600 font-bold mt-1"></p></div>
+        </div>
+      </div>
+      <div id="persenBox" class="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 mb-3">
+        <p class="font-bold text-sm mb-1">💰 PEMBAGIAN PERSENAN (Hanya Owner & Manager)</p>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div><label class="text-xs font-bold">Pilih Pembagian Tattoo Artis</label><select id="persenArtis" onchange="hitungPersen()" class="w-full border rounded-lg p-2.5 font-bold"><option value="30">30% Artis | 70% Management</option><option value="40">40% Artis | 60% Management</option><option value="50" selected>50% Artis | 50% Management</option></select><div class="bg-white rounded-lg p-2 mt-2 text-xs space-y-1"><p>Fee Artis Kotor: <b id="feeArtisKotor" class="text-blue-600">Rp 0</b></p><p>Fee Backup: <b id="feeBackup" class="text-purple-600">Rp 0</b></p><p>Fee Artis Bersih: <b id="feeArtis" class="text-green-600">Rp 0</b></p></div></div>
+          <div><label class="text-xs font-bold">Fee BackUp Artis (% dari Fee Artis)</label><input id="persenBackup" type="number" oninput="hitungPersen()" placeholder="Ex: 20" class="w-full border rounded-lg p-2.5"><div class="bg-white rounded-lg p-2 mt-2"><p class="text-xs font-bold">PROFIT MANAGEMENT:</p><b id="profitPreview" class="text-green-600 text-lg">Rp 0</b></div></div>
+        </div>
+        <div id="rumusText" class="text-[11px] bg-white p-2 rounded-lg mt-2 font-mono"></div>
+      </div>
+      <div class="bg-red-50 border rounded-xl p-3">
+        <p class="font-bold text-sm mb-2">3. RIWAYAT PENYAKIT:</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm" id="penyakitBox">
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="HIV / AIDS"> HIV / AIDS</label>
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="Diabetes"> Diabetes</label>
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="Penyakit Kulit (Dermatitis, Eksim, Psoriasis)"> Penyakit Kulit</label>
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="Gangguan Pembekuan Darah / Hemofilia"> Hemofilia</label>
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="Hepatitis B / C"> Hepatitis B/C</label>
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="Penyakit Jantung"> Penyakit Jantung</label>
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="Alergi (Tinta, Logam, Obat)"> Alergi</label>
+          <label class="flex gap-2 bg-white p-2 rounded-lg border"><input type="checkbox" value="Tidak Ada"> Tidak Ada / Sehat</label>
+        </div>
+        <input id="penyakitLain" placeholder="Lain-lainnya..." class="w-full border rounded-lg p-2 mt-2">
+      </div>
+      <div class="mt-3 text-xs leading-5 bg-gray-50 p-3 rounded-xl"><b>DENGAN INI MENYATAKAN BAHWA :</b><br>1. Saya dalam kondisi <b>SADAR, SEHAT JASMANI dan ROHANI</b>.<br>2. Saya memahami resiko infeksi, iritasi, alergi.<br>3. Saya telah memberikan informasi jujur.<br>4. Saya memahami hasil akhir dapat berbeda.<br>5. Saya bersedia mengikuti aftercare RiseInk.<br>6. Saya tidak akan menuntut RiseInk apabila kelalaian saya sendiri.<br>7. Saya berusia di atas 18 tahun / izin orang tua/wali.<br>8. Semua data benar dan proses tattoo atas keinginan sendiri.</div>
+      <div class="mt-3 bg-yellow-50 border rounded-xl p-3"><p class="font-bold text-sm">✍️ Tanda Tangan Digital Customer</p><canvas id="ttd"></canvas><button onclick="clearTtd()" class="w-full bg-gray-200 py-2 rounded-xl text-sm mt-2">Hapus Tanda Tangan</button></div>
+      <button onclick="simpan()" class="w-full bg-black text-white py-3 rounded-xl font-bold mt-3" id="btnSimpan">💾 SIMPAN DATA & AUTO KIRIM DRAF SURAT KE WHATSAPP</button>
+      <button onclick="resetForm()" class="w-full bg-gray-100 py-2 rounded-xl text-sm mt-1">Reset Form</button>
+    </div>
+  </div>
+
+  <div id="tabInputManager" class="mt-3 hidden">
+    <div class="bg-blue-600 text-white rounded-2xl p-4">
+      <h2 class="font-bold">📝 Input Data Surat Pernyataan Customer - Manager Pontianak / Sintang</h2>
+      <p class="text-xs opacity-90">Manager bisa input Surat Pernyataan langsung dari akun Manager. <span id="managerInputNama"></span></p>
+    </div>
+    <div class="bg-white text-black rounded-2xl p-4 mt-3">
+      <div class="grid md:grid-cols-3 gap-2">
+        <div><label class="text-xs font-bold">Tanggal *</label><input id="mTgl" type="date" class="w-full border rounded-lg p-2" readonly></div>
+        <div><label class="text-xs font-bold">No. Resi (Otomatis)</label><input id="mResi" readonly class="w-full border rounded-lg p-2 bg-gray-200 font-bold"></div>
+        <div><label class="text-xs font-bold">Nama Customer *</label><input id="mNama" placeholder="Nama Lengkap" class="w-full border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold">Tanggal Lahir *</label><input id="mTglLahir" type="date" class="w-full border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold">Nomor HP / WhatsApp (+62) *</label><div class="flex"><span class="bg-red-600 text-white text-xs font-bold px-3 flex items-center rounded-l-lg">+62</span><input id="mHp" placeholder="8123456789" class="w-full border rounded-r-lg p-2" inputmode="numeric"></div></div>
+        <div><label class="text-xs font-bold">Alamat Email (Opsional)</label><input id="mEmail" placeholder="customer@gmail.com" class="w-full border rounded-lg p-2"></div>
+        <div class="md:col-span-2"><label class="text-xs font-bold">Alamat</label><input id="mAlamat" placeholder="Alamat lengkap" class="w-full border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold">Harga Tattoo (Rp) *</label><div class="flex"><span class="bg-yellow-400 text-black text-xs font-bold px-3 flex items-center rounded-l-lg">Rp.</span><input id="mHarga" type="number" oninput="onManagerHargaChange()" placeholder="1000000" class="w-full border rounded-r-lg p-2"></div></div>
+        <div><label class="text-xs font-bold">Tattoo Artis *</label><select id="mArtis" class="w-full border rounded-lg p-2 font-bold"><option value="">-- Pilih --</option><option>Joe</option><option>Lipang</option><option>Mazmur</option><option>Rio</option><option>Doni</option><option>Yoga</option><option>Ivo</option></select></div>
+        <div><label class="text-xs font-bold">BackUp Artis</label><select id="mBackup" class="w-full border rounded-lg p-2"><option value="">-- Tidak Ada Backup --</option><option>Hadi</option><option>Rere</option><option>Tanel</option><option>Aldi</option></select></div>
+        <div><label class="text-xs font-bold">Jenis / Bagian Tattoo</label><input id="mJenis" placeholder="Ex: Lengan Kanan - Naga" class="w-full border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold">Status Tagihan *</label><select id="mTagihan" onchange="onManagerHargaChange()" class="w-full border rounded-lg p-2 font-bold"><option value="BELUM BAYAR">BELUM BAYAR - TIDAK BISA SIMPAN</option><option value="DP">DP</option><option value="LUNAS">LUNAS - DP Auto = Harga</option></select><p id="mTagihanWarn" class="text-[11px] font-bold mt-1"></p></div>
+        <div><label class="text-xs font-bold">DP Sudah Dibayar (Rp)</label><div class="flex"><span class="bg-yellow-400 text-black text-xs font-bold px-3 flex items-center rounded-l-lg">Rp.</span><input id="mDp" type="number" value="0" class="w-full border rounded-r-lg p-2"></div><p id="mSisaInfo" class="text-[11px] text-orange-600 font-bold mt-1"></p></div>
+      </div>
+      <div class="bg-red-50 border rounded-xl p-3 mt-3"><p class="font-bold text-sm">Riwayat Penyakit:</p><input id="mPenyakit" placeholder="Ex: Tidak Ada / Sehat, Diabetes, Alergi, dll" class="w-full border rounded-lg p-2 mt-1"></div>
+      <div class="mt-3 bg-yellow-50 border rounded-xl p-3"><p class="font-bold text-sm">✍️ Tanda Tangan Digital Customer (Manager)</p><canvas id="ttdManager"></canvas><button onclick="clearTtdManager()" class="w-full bg-gray-200 py-2 rounded-xl text-sm mt-2">Hapus Tanda Tangan</button></div>
+      <button onclick="simpanManagerSurat()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-3" id="btnSimpanManager">💾 SIMPAN SURAT PERNYATAAN (MANAGER) & KIRIM WA</button>
+      <button onclick="resetFormManager()" class="w-full bg-gray-100 py-2 rounded-xl text-sm mt-1">Reset Form Manager</button>
+    </div>
+  </div>
+
+  <div id="managerPersenBox" class="hidden mt-3">
+    <div class="bg-blue-600 text-white rounded-2xl p-4">
+      <h3 class="font-bold">💰 Manager - Input Pembagian Persenan Tattoo Artis</h3>
+      <p class="text-xs opacity-80" id="managerPersenInfo"></p>
+      <div class="grid md:grid-cols-2 gap-2 mt-3">
+        <div><label class="text-xs font-bold">Pilih Pembagian Artis</label><select id="mPersenArtis" onchange="hitungPersenManager()" class="w-full border rounded-lg p-2.5 font-bold text-black"><option value="30">30% Artis | 70% Management</option><option value="40">40% Artis | 60% Management</option><option value="50" selected>50% Artis | 50% Management</option></select></div>
+        <div><label class="text-xs font-bold">Fee Backup (% dari Fee Artis)</label><input id="mPersenBackup" type="number" oninput="hitungPersenManager()" placeholder="Ex: 20" class="w-full border rounded-lg p-2.5 text-black"></div>
+      </div>
+      <div class="bg-white text-black rounded-lg p-3 mt-2 text-xs" id="mRumus"></div>
+      <div class="flex gap-2 mt-3"><button onclick="simpanPersenManager()" class="flex-1 bg-black text-white py-3 rounded-xl font-bold">💾 SIMPAN PERSENAN ARTIS</button><button onclick="batalPersenManager()" class="bg-white text-black px-4 rounded-xl font-bold">Batal</button></div>
+    </div>
+  </div>
+
+  <div id="tabRekap" class="mt-3 hidden">
+    <div class="bg-white text-black rounded-2xl p-3">
+      <h3 class="font-bold text-sm">🔍 FILTER & SORTIR REKAPAN</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+        <div><label class="text-[11px]">Periode</label><select id="fPeriode" onchange="render()" class="w-full border rounded-lg p-2 text-sm"><option value="all">Semua</option><option value="minggu">Mingguan</option><option value="bulan">Bulanan</option><option value="tahun">Tahunan</option></select></div>
+        <div><label class="text-[11px]">Dari Tanggal</label><input id="fDari" type="date" onchange="render()" class="w-full border rounded-lg p-2 text-sm"></div>
+        <div><label class="text-[11px]">Sampai Tanggal</label><input id="fSampai" type="date" onchange="render()" class="w-full border rounded-lg p-2 text-sm"></div>
+        <div><label class="text-[11px]">Nama Customer</label><input id="fNama" oninput="render()" placeholder="Cari nama..." class="w-full border rounded-lg p-2 text-sm"></div>
+        <div><label class="text-[11px]">Tattoo Artis</label><select id="fArtis" onchange="render()" class="w-full border rounded-lg p-2 text-sm"><option value="">Semua Artis</option><option>Joe</option><option>Lipang</option><option>Mazmur</option><option>Rio</option><option>Doni</option><option>Yoga</option><option>Ivo</option></select></div>
+        <div><label class="text-[11px]">BackUp Artis</label><select id="fBackup" onchange="render()" class="w-full border rounded-lg p-2 text-sm"><option value="">Semua Backup</option><option>Hadi</option><option>Rere</option><option>Tanel</option><option>Aldi</option></select></div>
+        <div><label class="text-[11px]">Tanggal</label><input id="fTanggal" type="date" onchange="render()" class="w-full border rounded-lg p-2 text-sm"></div>
+        <div><label class="text-[11px]">Urutkan</label><select id="fSort" onchange="render()" class="w-full border rounded-lg p-2 text-sm"><option value="baru">Terbaru</option><option value="lama">Terlama</option><option value="harga">Harga Tertinggi</option><option value="nama">Nama A-Z</option></select></div>
+      </div>
+      <div class="flex gap-2 mt-3">
+        <button onclick="exportExcel()" class="flex-1 bg-green-600 text-white py-2.5 rounded-xl font-bold text-sm" id="btnExport">⬇ Export Excel Customer</button>
+        <button onclick="resetFilter()" class="bg-gray-200 px-4 rounded-xl font-bold text-sm">Reset</button>
+      </div>
+      <p id="infoRekap" class="text-xs text-blue-600 font-semibold mt-2"></p>
+    </div>
+    <div id="listData" class="space-y-2 mt-3"></div>
+  </div>
+
+  <div id="tabPengeluaran" class="mt-3 hidden">
+    <div class="bg-white text-black rounded-2xl p-4">
+      <h2 class="font-bold">💸 Form Pengeluaran</h2>
+      <p class="text-xs text-gray-500 mb-3">Hanya Manager & Owner.</p>
+      <input type="hidden" id="pengId">
+      <div class="grid md:grid-cols-2 gap-2">
+        <div><label class="text-xs font-bold">Tanggal Pengeluaran *</label><input id="pTgl" type="date" onchange="updateResiPengByDate()" class="w-full border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold">No. Resi Pengeluaran (Otomatis 🔒)</label><input id="pResi" readonly class="w-full border rounded-lg p-2 bg-gray-200 font-bold"></div>
+        <div class="md:col-span-2"><label class="text-xs font-bold">Keterangan Pengeluaran *</label><input id="pKet" placeholder="Ex: Beli tinta hitam" class="w-full border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold">Nominal Pengeluaran (Rp) *</label><div class="flex"><span class="bg-yellow-400 text-black text-xs font-bold px-3 flex items-center rounded-l-lg">Rp.</span><input id="pNominal" type="number" placeholder="50000" class="w-full border rounded-r-lg p-2"></div></div>
+        <div><label class="text-xs font-bold">Kategori</label><select id="pKat" class="w-full border rounded-lg p-2"><option>Tinta & Jarum</option><option>Peralatan Studio</option><option>Listrik / Air / WiFi</option><option>Sewa Tempat</option><option>Promosi</option><option>Lainnya</option></select></div>
+        <div><label class="text-xs font-bold">📸 Foto Barang</label><input id="pFotoBarang" type="file" accept="image/*" onchange="previewPeng(event,'barang')" class="w-full border rounded-lg p-2"><img id="fotoBarangPreview" class="w-32 h-32 object-cover rounded-lg mt-2 hidden"></div>
+        <div><label class="text-xs font-bold">🧾 Bukti Kuitansi</label><input id="pFotoKuitansi" type="file" accept="image/*" onchange="previewPeng(event,'kuitansi')" class="w-full border rounded-lg p-2"><img id="fotoKuitansiPreview" class="w-32 h-32 object-cover rounded-lg mt-2 hidden"></div>
+      </div>
+      <button onclick="simpanPengeluaran()" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold mt-3">💾 SIMPAN PENGELUARAN</button>
+      <button onclick="resetPeng()" class="w-full bg-gray-100 py-2 rounded-xl text-sm mt-1">Reset</button>
+    </div>
+    <div class="bg-white text-black rounded-2xl p-3 mt-3">
+      <div class="flex justify-between items-center"><h3 class="font-bold text-sm">📋 Daftar Pengeluaran</h3><button onclick="exportPengExcel()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold" id="btnExportPeng">⬇ Export Excel Pengeluaran</button></div>
+      <div class="grid grid-cols-2 gap-2 mt-2">
+        <div><label class="text-[11px]">Filter Tanggal Dari</label><input id="pfDari" type="date" onchange="renderPeng()" class="w-full border rounded-lg p-2 text-sm"></div>
+        <div><label class="text-[11px]">Sampai</label><input id="pfSampai" type="date" onchange="renderPeng()" class="w-full border rounded-lg p-2 text-sm"></div>
+      </div>
+      <p id="infoPeng" class="text-xs text-red-600 font-semibold mt-2"></p>
+      <div id="listPeng" class="space-y-2 mt-2"></div>
+    </div>
+  </div>
+
+  <div id="tabGaji" class="mt-3 hidden">
+    <div class="bg-white text-black rounded-2xl p-4">
+      <h2 class="font-bold">💰 Gaji & Pembagian Persenan Manager - Hanya Owner Bisa Input</h2>
+      <p class="text-xs text-gray-500 mb-3" id="gajiRoleNote"></p>
+      <div id="formGajiOwner" class="bg-purple-50 border-2 border-purple-300 rounded-xl p-3 mb-3">
+        <p class="font-bold text-sm">👑 Form Owner - Input Gaji & Persenan Manager</p>
+        <input type="hidden" id="gajiId">
+        <div class="grid md:grid-cols-3 gap-2 mt-2">
+          <div><label class="text-xs font-bold">Tanggal Gaji *</label><input id="gTgl" type="date" class="w-full border rounded-lg p-2"></div>
+          <div><label class="text-xs font-bold">Nama Karyawan / Manager *</label><select id="gNama" class="w-full border rounded-lg p-2"><option value="">-- Pilih --</option><option>Manager Pontianak (Tanel)</option><option>Manager Sintang (Aldi)</option><option>Admin Data</option><option>Joe</option><option>Lipang</option><option>Mazmur</option><option>Rio</option><option>Doni</option><option>Yoga</option><option>Ivo</option><option>Hadi</option><option>Rere</option></select></div>
+          <div><label class="text-xs font-bold">Jabatan</label><select id="gJabatan" class="w-full border rounded-lg p-2"><option>Manager</option><option>Admin Data</option><option>Tattoo Artis</option><option>Backup Artis</option></select></div>
+          <div><label class="text-xs font-bold">Gaji Pokok (Rp) *</label><div class="flex"><span class="bg-yellow-400 text-black text-xs font-bold px-3 flex items-center rounded-l-lg">Rp.</span><input id="gNominal" type="number" placeholder="1000000" class="w-full border rounded-r-lg p-2"></div></div>
+          <div><label class="text-xs font-bold">Persenan Manager (% dari Profit)</label><input id="gPersenManager" type="number" placeholder="Ex: 10" class="w-full border rounded-lg p-2"></div>
+          <div><label class="text-xs font-bold">Keterangan / Periode</label><input id="gKet" placeholder="Ex: Gaji November 2026" class="w-full border rounded-lg p-2"></div>
+        </div>
+        <div id="gajiPreview" class="text-xs bg-white p-2 rounded-lg mt-2"></div>
+        <button onclick="simpanGaji()" class="w-full bg-purple-600 text-white py-3 rounded-xl font-bold mt-2" id="btnSimpanGaji">💾 SIMPAN GAJI & PERSENAN MANAGER (Owner Saja)</button>
+      </div>
+      <div id="formGajiManager" class="hidden bg-blue-50 border rounded-xl p-3 mb-3">
+        <p class="font-bold text-sm">💼 Form Manager - Input Gaji Admin Saja</p>
+        <div class="grid md:grid-cols-3 gap-2 mt-2">
+          <div><label class="text-xs font-bold">Tanggal Gaji Admin *</label><input id="gTglAdmin" type="date" class="w-full border rounded-lg p-2"></div>
+          <div><label class="text-xs font-bold">Nama</label><input value="Admin Data" readonly class="w-full border rounded-lg p-2 bg-gray-100"></div>
+          <div><label class="text-xs font-bold">Gaji Admin (Rp) *</label><div class="flex"><span class="bg-yellow-400 text-black text-xs font-bold px-3 flex items-center rounded-l-lg">Rp.</span><input id="gNominalAdmin" type="number" placeholder="800000" class="w-full border rounded-r-lg p-2"></div></div>
+        </div>
+        <button onclick="simpanGajiAdminByManager()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-2">💾 SIMPAN GAJI ADMIN (Manager)</button>
+      </div>
+      <div class="bg-white border rounded-xl p-3"><h3 class="font-bold text-sm">📋 Daftar Gaji & Persenan Manager</h3><p id="infoGaji" class="text-xs text-purple-600 font-semibold mt-1"></p><div id="listGaji" class="space-y-2 mt-2"></div></div>
+    </div>
+  </div>
+
+  <div id="tabAbsen" class="mt-3 hidden">
+    <div class="bg-white text-black rounded-2xl p-4">
+      <h2 class="font-bold">📋 Absen Karyawan - Notifikasi & Data Login Admin & Manager</h2>
+      <p class="text-xs text-gray-500">Slide khusus Owner. Setelah Admin & Manager login, langsung tercatat di sini.</p>
+      <div class="grid grid-cols-3 gap-2 mt-3">
+        <div class="bg-green-100 rounded-xl p-3"><p class="text-[11px]">Total Login Hari Ini</p><b id="absenHariIni" class="text-xl">0</b></div>
+        <div class="bg-blue-100 rounded-xl p-3"><p class="text-[11px]">Admin Sudah Absen?</p><b id="absenAdminStatus" class="text-sm">Belum</b></div>
+        <div class="bg-purple-100 rounded-xl p-3"><p class="text-[11px]">Manager Sudah Absen?</p><b id="absenManagerStatus" class="text-sm">Belum</b></div>
+      </div>
+      <div class="mt-3"><h3 class="font-bold text-sm">📋 Daftar Absen</h3><p id="infoAbsen" class="text-xs text-blue-600 mt-1"></p><div id="listAbsen" class="space-y-2 mt-2"></div></div>
+      <button onclick="hapusAbsen()" class="w-full bg-gray-200 py-2 rounded-xl text-sm mt-3">Hapus Semua Data Absen (Owner)</button>
+    </div>
+  </div>
+</div>
+
+<div id="pinModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+  <div class="bg-white text-black rounded-2xl p-5 w-full max-w-sm">
+    <h3 class="font-bold text-center">🔐 Konfirmasi PIN Owner</h3><p class="text-xs text-center text-gray-500 mt-1">Admin / Manager tidak bisa Edit / Hapus tanpa PIN dari Owner. Setelah dipakai 1x, PIN otomatis kadaluarsa & ganti ke PIN baru.</p>
+    <p id="pinModalTarget" class="text-xs text-center font-bold mt-2"></p>
+    <input id="pinInput" type="password" placeholder="Masukkan PIN 6 Digit dari Owner" class="w-full border rounded-lg p-3 mt-3 text-center font-bold text-lg" maxlength="6">
+    <div class="flex gap-2 mt-3"><button onclick="closePin()" class="flex-1 bg-gray-200 py-2.5 rounded-xl font-bold">Batal</button><button onclick="confirmPin()" class="flex-1 bg-black text-white py-2.5 rounded-xl font-bold">Konfirmasi PIN</button></div>
+  </div>
+</div>
+
+<script>
+let datas = JSON.parse(localStorage.getItem('riseink_v22')||'[]');
+let pengs = JSON.parse(localStorage.getItem('riseink_peng_v22')||'[]');
+let gajiList = JSON.parse(localStorage.getItem('riseink_gaji_v22')||'[]');
+let notifs = JSON.parse(localStorage.getItem('riseink_notif_v22')||'[]');
+let absenList = JSON.parse(localStorage.getItem('riseink_absen_v22')||'[]');
+let adminLoginNotifs = JSON.parse(localStorage.getItem('riseink_adminlogin_notif_v22')||'[]');
+let OWNER_PIN = localStorage.getItem('riseink_pin_v22')||'123456';
+let pinWaktu = localStorage.getItem('riseink_pin_waktu_v22')||'Default 123456';
+let currentUser=null, pendingAction=null, pendingId=null, managerEditId=null, fotoBarangBase64='', fotoKuitansiBase64='';
+let ttdDrawn=false, lastSavedId=null;
+let idleSeconds=3600, idleTimer=null;
+let selectedLoginRole='', ownerCodeOk=false;
+const OWNER_LOGIN_CODE='140913';
+const USERS={owner:{pass:'owner123',role:'OWNER',nama:'Owner',cabang:'Owner'},admin:{pass:'admin123',role:'ADMIN DATA',nama:'Admin Data',cabang:'Admin'},tanel:{pass:'tanel123',role:'MANAGER',nama:'Manager Pontianak (Tanel)',cabang:'Pontianak',nickname:'tanel'},aldi:{pass:'aldi123',role:'MANAGER',nama:'Manager Sintang (Aldi)',cabang:'Sintang',nickname:'aldi'}};
+const ALAMAT='Jl. H. Abbas 1 No.79, Benua Melayu Darat, Kec. Pontianak Sel., Kota Pontianak, Kalimantan Barat 78122';
+const LIST_ARTIS=['Joe','Lipang','Mazmur','Rio','Doni','Yoga','Ivo'];
+function fmt(n){return 'Rp '+(Number(n)||0).toLocaleString('id-ID')}
+function todayStr(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function normalizeHP(raw){let s=(raw||"").toString().trim().replace(/[^0-9]/g,"");if(!s)return "";if(s.startsWith("62"))return "+62"+s.slice(2);if(s.startsWith("0"))return "+62"+s.slice(1);if(s.startsWith("8"))return "+62"+s;return "+62"+s;}
+function hpUntukWA(hp){return (hp||"").replace("+","");}
+function hitungSisa(){let h=+document.getElementById('harga').value||0,dp=+document.getElementById('dpBayar').value||0;let sisa=h-dp;let el=document.getElementById('sisaInfo');if(el)el.innerText=`Sisa Tagihan: Rp ${sisa.toLocaleString('id-ID')} (Harga Rp ${h.toLocaleString('id-ID')} - DP Rp ${dp.toLocaleString('id-ID')})`;}
+function onHargaOrTagihanChange(){
+  let h=+document.getElementById('harga').value||0; let tag=document.getElementById('tagihan').value; let dpEl=document.getElementById('dpBayar'); let warn=document.getElementById('tagihanWarn'); let btn=document.getElementById('btnSimpan');
+  if(tag==='LUNAS'){ dpEl.value=h; dpEl.readOnly=true; dpEl.classList.add('bg-gray-200'); warn.innerText='✅ LUNAS: DP otomatis = Harga.'; warn.className='text-[11px] font-bold mt-1 text-green-600'; btn.disabled=false; btn.classList.remove('opacity-50'); }
+  else if(tag==='DP'){ dpEl.readOnly=false; dpEl.classList.remove('bg-gray-200'); warn.innerText='⚠️ DP: Wajib isi DP > 0 dan < Harga.'; warn.className='text-[11px] font-bold mt-1 text-orange-600'; btn.disabled=false; btn.classList.remove('opacity-50'); }
+  else { dpEl.value=0; dpEl.readOnly=true; dpEl.classList.add('bg-gray-200'); warn.innerText='❌ BELUM BAYAR: Tidak bisa menginput data.'; warn.className='text-[11px] font-bold mt-1 text-red-600'; btn.disabled=true; btn.classList.add('opacity-50'); }
+  hitungSisa();
+}
+function onManagerHargaChange(){
+  let h=+document.getElementById('mHarga').value||0; let tag=document.getElementById('mTagihan').value; let dpEl=document.getElementById('mDp'); let warn=document.getElementById('mTagihanWarn'); let btn=document.getElementById('btnSimpanManager');
+  let sisa=h-(+dpEl.value||0); document.getElementById('mSisaInfo').innerText=`Sisa Tagihan: Rp ${sisa.toLocaleString('id-ID')}`;
+  if(tag==='LUNAS'){ dpEl.value=h; dpEl.readOnly=true; warn.innerText='✅ LUNAS: DP otomatis = Harga.'; warn.className='text-[11px] font-bold mt-1 text-green-600'; btn.disabled=false; btn.classList.remove('opacity-50'); }
+  else if(tag==='DP'){ dpEl.readOnly=false; warn.innerText='⚠️ DP: Wajib isi DP > 0 dan < Harga.'; warn.className='text-[11px] font-bold mt-1 text-orange-600'; btn.disabled=false; btn.classList.remove('opacity-50'); }
+  else { dpEl.value=0; dpEl.readOnly=true; warn.innerText='❌ BELUM BAYAR: Tidak bisa simpan.'; warn.className='text-[11px] font-bold mt-1 text-red-600'; btn.disabled=true; btn.classList.add('opacity-50'); }
+}
+function buatPinAcak(){ let pin=String(Math.floor(100000+Math.random()*900000)); OWNER_PIN=pin; pinWaktu=new Date().toLocaleString('id-ID'); localStorage.setItem('riseink_pin_v22',pin); localStorage.setItem('riseink_pin_waktu_v22',pinWaktu); document.getElementById('pinDisplay').innerText=pin; document.getElementById('pinWaktu').innerText=pinWaktu; alert('✅ PIN Baru Owner: '+pin); }
+function setPinManual(){ let v=document.getElementById('pinManual').value.trim(); if(!/^\d{6}$/.test(v)){ alert('PIN harus 6 digit!'); return; } OWNER_PIN=v; pinWaktu=new Date().toLocaleString('id-ID')+' (Manual)'; localStorage.setItem('riseink_pin_v22',v); localStorage.setItem('riseink_pin_waktu_v22',pinWaktu); document.getElementById('pinDisplay').innerText=v; document.getElementById('pinWaktu').innerText=pinWaktu; alert('✅ PIN Manual: '+v); }
+function salinPin(){ if(navigator.clipboard) navigator.clipboard.writeText(OWNER_PIN).then(()=>alert('PIN disalin: '+OWNER_PIN)); else alert('PIN: '+OWNER_PIN); }
+function pakaiPinOwner(){ let lama=OWNER_PIN; let baru=String(Math.floor(100000+Math.random()*900000)); OWNER_PIN=baru; pinWaktu=new Date().toLocaleString('id-ID')+' (Auto ganti karena PIN '+lama+' sudah terpakai)'; localStorage.setItem('riseink_pin_v22',baru); localStorage.setItem('riseink_pin_waktu_v22',pinWaktu); if(currentUser && currentUser.role==='OWNER'){ document.getElementById('pinDisplay').innerText=baru; document.getElementById('pinWaktu').innerText=pinWaktu; } return baru; }
+function tambahNotif(tipe, targetNama, resi){ let jam=new Date().toLocaleString('id-ID'); let item={id:Date.now(), tipe, oleh:currentUser?currentUser.nama+' ('+currentUser.role+')':'-', nama:targetNama, resi, jam}; notifs.unshift(item); localStorage.setItem('riseink_notif_v22',JSON.stringify(notifs)); renderNotif(); }
+function renderNotif(){ if(!currentUser || currentUser.role!=='OWNER'){ document.getElementById('notifOwnerBox').classList.add('hidden'); return; } document.getElementById('notifOwnerBox').classList.remove('hidden'); document.getElementById('listNotif').innerHTML = notifs.length ? notifs.map(n=>{ let isEdit=n.tipe==='edit'; let bg=isEdit?'bg-yellow-100 border-yellow-400':'bg-red-100 border-red-500'; let label=isEdit?'🟡 MENCOBA EDIT':'🔴 MENCOBA HAPUS'; return `<div class="${bg} border rounded-xl p-3"><p class="text-xs font-bold">${label} - ${n.jam}</p><p class="text-xs">Oleh: <b>${n.oleh}</b> | Customer: <b>${n.nama}</b> | Resi: ${n.resi}</p></div>`; }).join('') : '<p class="text-center text-gray-400 text-xs py-2">Belum ada percobaan Edit / Hapus.</p>'; }
+function hapusSemuaNotif(){ if(confirm('Hapus semua pemberitahuan?')){ notifs=[]; localStorage.setItem('riseink_notif_v22',JSON.stringify(notifs)); renderNotif(); } }
+function tambahNotifAdminLogin(username){ let now=new Date(); let item={id:Date.now(), text:`Admin ${username} login pada ${now.toLocaleString('id-ID')}`, jam:now.toLocaleString('id-ID'), tanggal:todayStr()}; adminLoginNotifs.unshift(item); localStorage.setItem('riseink_adminlogin_notif_v22',JSON.stringify(adminLoginNotifs)); }
+function renderAdminLoginNotif(){ if(!currentUser || (currentUser.role!=='OWNER' && currentUser.role!=='MANAGER')){ document.getElementById('notifAdminLoginBox').classList.add('hidden'); return; } document.getElementById('notifAdminLoginBox').classList.remove('hidden'); document.getElementById('listAdminLoginNotif').innerHTML = adminLoginNotifs.length ? adminLoginNotifs.map(n=>`<div class="bg-white text-black rounded-xl p-3 text-xs"><b>🔔 ${n.text}</b><br><span class="text-gray-500">Jam: ${n.jam}</span></div>`).join('') : '<p class="text-xs opacity-80">Belum ada Admin yang login.</p>'; }
+function hapusNotifAdminLogin(){ if(confirm('Hapus notifikasi login Admin?')){ adminLoginNotifs=[]; localStorage.setItem('riseink_adminlogin_notif_v22',JSON.stringify(adminLoginNotifs)); renderAdminLoginNotif(); } }
+function catatAbsen(username){ let u=USERS[username]; let now=new Date(); let item={id:Date.now(), nama:u.nama, username, role:u.role, cabang:u.cabang||'-', jam:now.toLocaleString('id-ID'), tanggal:todayStr(), status:'Hadir'}; absenList.unshift(item); localStorage.setItem('riseink_absen_v22',JSON.stringify(absenList)); renderAbsen(); }
+function renderAbsen(){ if(!currentUser) return; let hariIni=todayStr(); let hariIniList=absenList.filter(x=>x.tanggal===hariIni); document.getElementById('absenHariIni').innerText=hariIniList.length; document.getElementById('absenAdminStatus').innerText=hariIniList.some(x=>x.role==='ADMIN DATA')?'✅ Sudah Absen':'Belum'; document.getElementById('absenManagerStatus').innerText=hariIniList.some(x=>x.role==='MANAGER')?'✅ Sudah Absen':'Belum'; document.getElementById('infoAbsen').innerText='Total '+absenList.length+' | Hari ini: '+hariIniList.length; document.getElementById('listAbsen').innerHTML=absenList.map(a=>`<div class="border rounded-xl p-3"><p class="text-sm font-bold">${a.nama} - ${a.role} - Cabang ${a.cabang}</p><p class="text-xs">Username: ${a.username} | Jam: ${a.jam} | Tanggal: ${a.tanggal} | Status: <b class="text-green-600">${a.status}</b></p></div>`).join('')||'<p class="text-center text-gray-400 text-sm py-4">Belum ada data absen</p>'; }
+function hapusAbsen(){ if(currentUser.role!=='OWNER'){ alert('Hanya Owner bisa hapus Absen.'); return; } if(confirm('Hapus semua data absen?')){ absenList=[]; localStorage.setItem('riseink_absen_v22',JSON.stringify(absenList)); renderAbsen(); } }
+function resetIdle(){ idleSeconds=3600; updateIdleText(); }
+function updateIdleText(){ let m=Math.floor(idleSeconds/60); let s=idleSeconds%60; let el=document.getElementById('idleInfo'); if(el) el.innerText='Sisa aktif: '+m+':'+String(s).padStart(2,'0')+' - 1 jam tanpa edit/input auto logout'; }
+function startIdleTimer(){ clearInterval(idleTimer); idleTimer=setInterval(()=>{ idleSeconds--; updateIdleText(); if(idleSeconds<=0){ clearInterval(idleTimer); alert('⏰ Sesi berakhir: 1 jam tanpa pengeditan / input data. Otomatis logout.'); logout(); } },1000); }
+['click','keydown','input','touchstart'].forEach(ev=>{ document.addEventListener(ev, ()=>{ if(currentUser){ idleSeconds=3600; } }); });
+
+// ===== LOGIN KECIL - 1 KLIK -> ISI USER + PASS =====
+function clickRoleLogin(role){
+  selectedLoginRole = role; ownerCodeOk = false;
+  document.getElementById('loginFormSmall').classList.add('hidden');
+  document.getElementById('modalPinSmall').classList.add('hidden');
+  document.getElementById('loginMsg').innerText='';
+  if(role==='owner'){
+    document.getElementById('modalPinSmall').classList.remove('hidden');
+    ['p1','p2','p3','p4','p5','p6'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pinErrorSmall').innerText='';
+    setTimeout(()=>document.getElementById('p1').focus(),100);
+    return;
+  }
+  let label = role==='admin' ? 'Login ADMIN - Isi Username + Password' : role==='tanel' ? 'Login MANAGER PONTIANAK (Tanel) - Isi Username + Password' : 'Login MANAGER SINTANG (Aldi) - Isi Username + Password';
+  document.getElementById('loginFormSmall').classList.remove('hidden');
+  document.getElementById('loginRoleLabelSmall').innerText = label;
+  document.getElementById('loginUser').value=''; document.getElementById('loginPass').value='';
+  setTimeout(()=>document.getElementById('loginUser').focus(),100);
+}
+function nextPinSmall(el,next){ if(el.value.length===1 && next) document.getElementById(next).focus(); }
+function closePinSmall(){ document.getElementById('modalPinSmall').classList.add('hidden'); document.getElementById('loginFormSmall').classList.add('hidden'); selectedLoginRole=''; ownerCodeOk=false; }
+function checkOwnerPinSmall(){
+  let code=['p1','p2','p3','p4','p5','p6'].map(id=>document.getElementById(id).value).join('');
+  if(code===OWNER_LOGIN_CODE){
+    ownerCodeOk=true; document.getElementById('modalPinSmall').classList.add('hidden');
+    document.getElementById('loginFormSmall').classList.remove('hidden');
+    document.getElementById('loginRoleLabelSmall').innerText='Login OWNER - Kode Benar, Isi Username + Password';
+    document.getElementById('loginUser').value=''; document.getElementById('loginPass').value='';
+    setTimeout(()=>document.getElementById('loginUser').focus(),100);
+  } else { document.getElementById('pinErrorSmall').innerText='Kode salah. Masukkan 6 digit yang benar.'; }
+}
+function backToRolesSmall(){ document.getElementById('loginFormSmall').classList.add('hidden'); document.getElementById('modalPinSmall').classList.add('hidden'); selectedLoginRole=''; ownerCodeOk=false; }
+function doLogin(){
+  let u=document.getElementById('loginUser').value.trim().toLowerCase(), p=document.getElementById('loginPass').value.trim();
+  if(!selectedLoginRole){ document.getElementById('loginMsg').innerText='❌ Pilih role dulu: OWNER / ADMIN / MANAGER'; return; }
+  if(selectedLoginRole==='owner' && !ownerCodeOk){ document.getElementById('modalPinSmall').classList.remove('hidden'); document.getElementById('loginMsg').innerText='🔐 Owner wajib masukkan kode 6 digit dulu.'; return; }
+  if(!USERS[selectedLoginRole]){ document.getElementById('loginMsg').innerText='❌ Role tidak ditemukan'; return; }
+  if(USERS[selectedLoginRole].pass===p && u===selectedLoginRole){
+    enterApp(selectedLoginRole);
+  } else if(USERS[u] && USERS[u].pass===p && u===selectedLoginRole){
+    enterApp(u);
+  } else { document.getElementById('loginMsg').innerText='❌ Username / Password salah untuk '+selectedLoginRole.toUpperCase(); }
+}
+function enterApp(u){
+  currentUser={username:u, role:USERS[u].role, nama:USERS[u].nama, cabang:USERS[u].cabang, nickname:USERS[u].nickname||''};
+  document.getElementById('loginPage').classList.add('hidden'); document.getElementById('appPage').classList.remove('hidden');
+  document.getElementById('userInfo').innerText='Login sebagai: '+currentUser.nama+' ('+currentUser.username+')'+(currentUser.cabang?' | Cabang: '+currentUser.cabang:'');
+  if(currentUser.role==='ADMIN DATA'){ document.getElementById('sesiInfo').innerText='⏰ Sesi Admin: 1 jam tanpa edit/input auto logout.'; } else { document.getElementById('sesiInfo').innerText=''; }
+  if(u==='admin'){ tambahNotifAdminLogin(u); catatAbsen(u); } else { catatAbsen(u); }
+  let isAdmin = currentUser.role==='ADMIN DATA'; let isManager = currentUser.role==='MANAGER'; let isOwner = currentUser.role==='OWNER';
+  document.getElementById('ownerPinBox').classList.toggle('hidden', !isOwner);
+  if(isOwner){ document.getElementById('pinDisplay').innerText=OWNER_PIN; document.getElementById('pinWaktu').innerText=pinWaktu; }
+  if(isManager){ document.getElementById('managerInputNama').innerText=' - '+currentUser.nama; }
+  document.getElementById('ownerStats').classList.toggle('hidden', isAdmin);
+  document.getElementById('ownerExtraStats').classList.toggle('hidden', isAdmin);
+  document.getElementById('artisStatsBox').classList.toggle('hidden', isAdmin);
+  document.getElementById('adminNotice').classList.toggle('hidden', !isAdmin);
+  document.getElementById('managerNotice').classList.toggle('hidden', !isManager);
+  document.getElementById('persenBox').classList.toggle('hidden', isAdmin);
+  document.getElementById('btnExport').classList.toggle('hidden', isAdmin);
+  document.getElementById('btnExportPeng').classList.toggle('hidden', isAdmin);
+  document.getElementById('btnInput').classList.toggle('hidden', isManager);
+  document.getElementById('btnInputManager').classList.toggle('hidden', !isManager && !isOwner);
+  document.getElementById('btnPengeluaran').classList.toggle('hidden', isAdmin);
+  document.getElementById('btnGaji').classList.toggle('hidden', isAdmin);
+  document.getElementById('btnAbsen').classList.toggle('hidden', !isOwner);
+  document.getElementById('roleNote').innerText = isOwner ? '👑 OWNER: Bisa lihat semua, PIN ada di atas.' : isAdmin ? '⚠️ ADMIN DATA: Input + Lihat Data (tanpa Omzet/Profit). Edit/Hapus wajib PIN Owner. 1 jam tanpa aktivitas auto logout.' : '💼 '+currentUser.nama+': Bisa Input Surat Pernyataan, Persenan Artis, Gaji Admin, Sisa Pelunasan DP.';
+  document.getElementById('gajiRoleNote').innerText = isOwner ? '👑 Owner: Bisa input Gaji Manager + Persenan Manager.' : isManager ? '💼 Manager: Bisa input Gaji Admin saja.' : 'Admin tidak bisa lihat Gaji.';
+  document.getElementById('formGajiOwner').classList.toggle('hidden', !isOwner);
+  document.getElementById('formGajiManager').classList.toggle('hidden', !isManager);
+  document.getElementById('resi').readOnly = !isOwner; document.getElementById('pResi').readOnly = !isOwner; document.getElementById('tgl').readOnly = !isOwner;
+  if(isManager){ showTab('inputManager'); } else { showTab('input'); }
+  render(); renderPeng(); renderGaji(); renderArtisStats(); renderNotif(); renderAdminLoginNotif(); renderAbsen(); onHargaOrTagihanChange(); resetFormManager(); resetIdle(); startIdleTimer();
+}
+function logout(){ clearInterval(idleTimer); localStorage.setItem('riseink_v22',JSON.stringify(datas)); localStorage.setItem('riseink_peng_v22',JSON.stringify(pengs)); localStorage.setItem('riseink_gaji_v22',JSON.stringify(gajiList)); selectedLoginRole=''; ownerCodeOk=false; location.reload(); }
+function showTab(t){
+  if(currentUser && currentUser.role==='ADMIN DATA' && (t==='pengeluaran' || t==='gaji' || t==='absen' || t==='inputManager')){ alert('Admin tidak bisa lihat Pengeluaran, Gaji, Absen, Input Manager.'); return; }
+  if(currentUser && currentUser.role==='MANAGER' && t==='input'){ alert('Manager pakai slide INPUT SURAT PERNYATAAN (MANAGER).'); return; }
+  if(currentUser && currentUser.role==='MANAGER' && t==='absen'){ alert('Absen hanya Owner.'); return; }
+  document.getElementById('tabInput').classList.toggle('hidden',t!=='input'); document.getElementById('tabInputManager').classList.toggle('hidden',t!=='inputManager'); document.getElementById('tabRekap').classList.toggle('hidden',t!=='rekap'); document.getElementById('tabPengeluaran').classList.toggle('hidden',t!=='pengeluaran'); document.getElementById('tabGaji').classList.toggle('hidden',t!=='gaji'); document.getElementById('tabAbsen').classList.toggle('hidden',t!=='absen'); document.getElementById('managerPersenBox').classList.add('hidden');
+  document.getElementById('btnInput').classList.toggle('tab-active',t==='input'); document.getElementById('btnInputManager').classList.toggle('tab-active',t==='inputManager'); document.getElementById('btnRekap').classList.toggle('tab-active',t==='rekap'); document.getElementById('btnPengeluaran').classList.toggle('tab-active',t==='pengeluaran'); document.getElementById('btnGaji').classList.toggle('tab-active',t==='gaji'); document.getElementById('btnAbsen').classList.toggle('tab-active',t==='absen');
+  if(t==='gaji') renderGaji(); if(t==='absen') renderAbsen();
+}
+function hitungPersen(){ let h=+document.getElementById('harga').value||0; let pa=+document.getElementById('persenArtis').value||0; let pb=+document.getElementById('persenBackup').value||0; let persenMgmt=100-pa; let profitMgmt=h*persenMgmt/100; let feeArtisKotor=h*pa/100; let feeBackup=feeArtisKotor*pb/100; let feeArtisBersih=feeArtisKotor-feeBackup; document.getElementById('feeArtisKotor').innerText=fmt(feeArtisKotor); document.getElementById('feeBackup').innerText=fmt(feeBackup); document.getElementById('feeArtis').innerText=fmt(feeArtisBersih); document.getElementById('profitPreview').innerText=fmt(profitMgmt); document.getElementById('rumusText').innerText='Harga '+fmt(h)+' | Management '+persenMgmt+'% = '+fmt(profitMgmt)+' | Artis '+pa+'% = '+fmt(feeArtisKotor)+' - Backup '+pb+'% ('+fmt(feeBackup)+') = Bersih '+fmt(feeArtisBersih); return {pa,pb,persenMgmt,profitMgmt,feeArtisKotor,feeBackup,feeArtisBersih}; }
+function genResi(dateStr){ let d=dateStr?new Date(dateStr):new Date(); let tgl=String(d.getDate()).padStart(2,'0'); let bln=String(d.getMonth()+1).padStart(2,'0'); let thn=d.getFullYear(); let prefix='RISE/'+tgl+'/'+bln+'/'+thn+'/'; let count=datas.filter(x=>x.resi&&x.resi.startsWith(prefix)).length+1; let nomor=count; while(datas.some(x=>x.resi===prefix+String(nomor).padStart(3,'0'))){nomor++;} return prefix+String(nomor).padStart(3,'0'); }
+function updateResiByDate(){ if(currentUser && currentUser.role!=='OWNER') return; if(!document.getElementById('editId').value){ document.getElementById('resi').value=genResi(document.getElementById('tgl').value); } }
+function genResiPeng(dateStr){ let d=dateStr?new Date(dateStr):new Date(); let tgl=String(d.getDate()).padStart(2,'0'); let bln=String(d.getMonth()+1).padStart(2,'0'); let thn=d.getFullYear(); let prefix='EXP/'+tgl+'/'+bln+'/'+thn+'/'; let count=pengs.filter(x=>x.resi&&x.resi.startsWith(prefix)).length+1; let nomor=count; while(pengs.some(x=>x.resi===prefix+String(nomor).padStart(3,'0'))){nomor++;} return prefix+String(nomor).padStart(3,'0'); }
+function updateResiPengByDate(){ if(!document.getElementById('pengId').value){ document.getElementById('pResi').value=genResiPeng(document.getElementById('pTgl').value); } }
+function resetForm(){ document.getElementById('editId').value=''; document.getElementById('formTitle').innerText='+ Input Customer Baru - Admin / Owner'; ['nama','tglLahir','hp','email','alamat','harga','jenis','penyakitLain','persenBackup'].forEach(id=>{let el=document.getElementById(id); if(el) el.value='';}); document.getElementById('artis').value=''; document.getElementById('backup').value=''; document.getElementById('persenArtis').value='50'; document.getElementById('tagihan').value='BELUM BAYAR'; document.getElementById('dpBayar').value='0'; document.querySelectorAll('#penyakitBox input').forEach(c=>c.checked=false); clearTtd(); document.getElementById('tgl').value=todayStr(); document.getElementById('resi').value=genResi(document.getElementById('tgl').value); hitungPersen(); onHargaOrTagihanChange(); }
+function getPenyakit(){ let cek=[...document.querySelectorAll('#penyakitBox input:checked')].map(c=>c.value); let lain=document.getElementById('penyakitLain').value.trim(); if(lain) cek.push('Lainnya: '+lain); return cek.join(', ')||'-'; }
+function getTTD(){ try{ return document.getElementById('ttd').toDataURL(); }catch(e){ return ''; } }
+function buatDrafSuratWA(t){ return `*SURAT PERNYATAAN - RISEINK TATTOO*\nNo. Resi: ${t.resi}\n${ALAMAT}\n\nSaya yang bertanda tangan di bawah ini:\nTanggal: ${t.tgl}\nNama: ${t.nama}\nTanggal Lahir: ${t.tglLahir}\nNomor HP: ${t.hp}\nEmail: ${t.email||'-'}\nHarga Tattoo: ${fmt(t.harga)}\nTattoo Artis: ${t.artis}\nJenis Tattoo: ${t.jenis||'-'}\n\nDengan ini menyatakan bahwa:\n1. Saya dalam kondisi SADAR, SEHAT JASMANI dan ROHANI.\n2. Saya memahami resiko infeksi, iritasi, alergi.\n3. Saya telah memberikan informasi jujur, termasuk riwayat penyakit: ${t.penyakit}\n4. Saya memahami hasil akhir dapat berbeda.\n5. Saya bersedia mengikuti aftercare RiseInk.\n6. Saya tidak akan menuntut RiseInk apabila kelalaian saya sendiri.\n7. Saya berusia di atas 18 tahun / izin orang tua/wali.\n8. Semua data benar dan proses tattoo atas keinginan sendiri.\n\nDemikian surat ini saya buat dengan sadar dan sebenar-benarnya.\nPontianak, ${t.tgl}\n${t.nama}\n\n--- INVOICE ---\nResi: ${t.resi} | Harga: ${fmt(t.harga)} | DP: ${fmt(t.dpBayar||0)} | Sisa: ${fmt(t.sisa||0)} | Status: ${t.tagihan}`; }
+function kirimWA_Wajib(t){ let pesan=buatDrafSuratWA(t); let waNum=hpUntukWA(t.hp); if(waNum) window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(pesan)}`,"_blank"); }
+function kirimWA_Lunas(t){ let pesan=`Halo ${t.nama}, terima kasih di RiseInk Tattoo.\n\n✅ *PEMBAYARAN ANDA SUDAH LUNAS*\n\nResi: ${t.resi}\nHarga: ${fmt(t.harga)}\nDP: ${fmt(t.dpBayar||0)}\nSisa: Rp 0\nStatus: LUNAS\nTattoo Artis: ${t.artis}\n\nTerima kasih, pembayaran Anda sudah lunas.\n\n- RiseInk Tattoo`; let waNum=hpUntukWA(t.hp); if(waNum) window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(pesan)}`,"_blank"); }
+function printLastSurat(){ if(lastSavedId) printConsent(lastSavedId); }
+function printLastInvoice(){ if(lastSavedId) printInvoice(lastSavedId); }
+function kirimUlangWA(){ let t=datas.find(x=>x.id==lastSavedId); if(t) kirimWA_Wajib(t); }
+function tutupAfterSave(){ document.getElementById('afterSaveBox').classList.add('hidden'); }
+function simpan(){
+  if(currentUser.role==='MANAGER'){ alert('Manager pakai slide INPUT SURAT PERNYATAAN (MANAGER).'); return; }
+  let tgl=document.getElementById('tgl').value, nama=document.getElementById('nama').value.trim(), tglLahir=document.getElementById('tglLahir').value, hpRaw=document.getElementById('hp').value.trim(), harga=document.getElementById('harga').value, artis=document.getElementById('artis').value;
+  if(!tgl||!nama||!tglLahir||!hpRaw||!harga||!artis){ alert('❌ WAJIB DIISI: Tanggal, Nama, Tgl Lahir, No HP, Harga, Artis!'); return; }
+  let tagihanVal=document.getElementById('tagihan').value; if(tagihanVal==='BELUM BAYAR'){ alert('❌ BELUM BAYAR: Tidak bisa simpan. Wajib DP atau LUNAS.'); return; }
+  let hargaNum=+harga||0, dpNum=+document.getElementById('dpBayar').value||0; if(tagihanVal==='LUNAS'){ dpNum=hargaNum; } if(tagihanVal==='DP' && (dpNum<=0||dpNum>=hargaNum)){ alert('❌ DP tidak valid!'); return; }
+  let hp=normalizeHP(hpRaw); let id=document.getElementById('editId').value; let calc=hitungPersen();
+  let data={ tgl, resi: id ? document.getElementById('resi').value : genResi(tgl), nama, tglLahir, hp, email:document.getElementById('email').value, alamat:document.getElementById('alamat').value, harga:hargaNum, artis, backup:document.getElementById('backup').value, jenis:document.getElementById('jenis').value, penyakit:getPenyakit(), penyakitLain:document.getElementById('penyakitLain').value, persenArtis:calc.pa, persenBackup:calc.pb, persenMgmt:calc.persenMgmt, feeArtisKotor:calc.feeArtisKotor, feeBackup:calc.feeBackup, feeArtis:calc.feeArtisBersih, profit:calc.profitMgmt, tagihan:tagihanVal, dpBayar:dpNum, sisa:hargaNum-dpNum, ttd:getTTD(), inputBy:currentUser.nama, savedAt:new Date().toISOString() };
+  if(id){ let i=datas.findIndex(x=>x.id==id); data.resi=datas[i].resi; if(currentUser.role==='OWNER') data.resi=document.getElementById('resi').value; datas[i]={...datas[i],...data}; } else { data.id=Date.now(); datas.unshift(data); }
+  localStorage.setItem('riseink_v22',JSON.stringify(datas)); lastSavedId=data.id; document.getElementById('afterSaveBox').classList.remove('hidden'); document.getElementById('afterSaveInfo').innerText=`Customer: ${data.nama} | Resi: ${data.resi} | HP: ${data.hp} | Status: ${data.tagihan} | DP: ${fmt(data.dpBayar)} | Sisa: ${fmt(data.sisa)}`; document.getElementById('afterSaveBox').scrollIntoView({behavior:'smooth'}); kirimWA_Wajib(data); alert('✅ Tersimpan! Resi: '+data.resi); resetIdle(); resetForm(); render(); renderArtisStats();
+}
+function resetFormManager(){ document.getElementById('mTgl').value=todayStr(); document.getElementById('mResi').value=genResi(document.getElementById('mTgl').value); ['mNama','mTglLahir','mHp','mEmail','mAlamat','mHarga','mJenis','mPenyakit','mDp'].forEach(id=>{let el=document.getElementById(id); if(el) el.value=id==='mDp'?'0':'';}); document.getElementById('mArtis').value=''; document.getElementById('mBackup').value=''; document.getElementById('mTagihan').value='BELUM BAYAR'; clearTtdManager(); onManagerHargaChange(); }
+function getTTDManager(){ try{ return document.getElementById('ttdManager').toDataURL(); }catch(e){ return ''; } }
+function simpanManagerSurat(){
+  if(currentUser.role!=='MANAGER' && currentUser.role!=='OWNER'){ alert('Hanya Manager & Owner yang bisa input di slide ini.'); return; }
+  let tgl=document.getElementById('mTgl').value, nama=document.getElementById('mNama').value.trim(), tglLahir=document.getElementById('mTglLahir').value, hpRaw=document.getElementById('mHp').value.trim(), harga=document.getElementById('mHarga').value, artis=document.getElementById('mArtis').value;
+  if(!tgl||!nama||!tglLahir||!hpRaw||!harga||!artis){ alert('❌ WAJIB DIISI: Tanggal, Nama, Tgl Lahir, No HP, Harga, Artis!'); return; }
+  let tagihanVal=document.getElementById('mTagihan').value; if(tagihanVal==='BELUM BAYAR'){ alert('❌ BELUM BAYAR: Tidak bisa simpan.'); return; }
+  let hargaNum=+harga||0, dpNum=+document.getElementById('mDp').value||0; if(tagihanVal==='LUNAS'){ dpNum=hargaNum; } if(tagihanVal==='DP' && (dpNum<=0||dpNum>=hargaNum)){ alert('❌ DP tidak valid!'); return; }
+  let hp=normalizeHP(hpRaw); let data={ tgl, resi:genResi(tgl), nama, tglLahir, hp, email:document.getElementById('mEmail').value, alamat:document.getElementById('mAlamat').value, harga:hargaNum, artis, backup:document.getElementById('mBackup').value, jenis:document.getElementById('mJenis').value, penyakit:document.getElementById('mPenyakit').value||'-', penyakitLain:'', persenArtis:50, persenBackup:0, persenMgmt:50, feeArtisKotor:hargaNum*0.5, feeBackup:0, feeArtis:hargaNum*0.5, profit:hargaNum*0.5, tagihan:tagihanVal, dpBayar:dpNum, sisa:hargaNum-dpNum, ttd:getTTDManager(), inputBy:currentUser.nama+' (Manager Input Surat)', savedAt:new Date().toISOString(), id:Date.now() };
+  datas.unshift(data); localStorage.setItem('riseink_v22',JSON.stringify(datas)); lastSavedId=data.id; document.getElementById('afterSaveBox').classList.remove('hidden'); document.getElementById('afterSaveInfo').innerText=`Manager Input Surat: ${data.nama} | Resi: ${data.resi} | HP: ${data.hp} | Status: ${data.tagihan}`; document.getElementById('afterSaveBox').scrollIntoView({behavior:'smooth'}); kirimWA_Wajib(data); alert('✅ Surat Pernyataan dari Manager tersimpan! Resi: '+data.resi); resetIdle(); resetFormManager(); render(); renderArtisStats();
+}
+function previewPeng(e,tipe){ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=ev=>{ if(tipe==='barang'){ fotoBarangBase64=ev.target.result; let img=document.getElementById('fotoBarangPreview'); img.src=fotoBarangBase64; img.classList.remove('hidden'); } else { fotoKuitansiBase64=ev.target.result; let img=document.getElementById('fotoKuitansiPreview'); img.src=fotoKuitansiBase64; img.classList.remove('hidden'); } }; r.readAsDataURL(f); }
+function resetPeng(){ document.getElementById('pengId').value=''; ['pKet','pNominal'].forEach(id=>document.getElementById(id).value=''); document.getElementById('pTgl').value=todayStr(); document.getElementById('pResi').value=genResiPeng(document.getElementById('pTgl').value); document.getElementById('fotoBarangPreview').classList.add('hidden'); document.getElementById('fotoKuitansiPreview').classList.add('hidden'); fotoBarangBase64=''; fotoKuitansiBase64=''; }
+function simpanPengeluaran(){ if(currentUser.role==='ADMIN DATA'){ alert('Pengeluaran hanya Manager & Owner.'); return; } let tgl=document.getElementById('pTgl').value, ket=document.getElementById('pKet').value.trim(), nominal=document.getElementById('pNominal').value; if(!tgl||!ket||!nominal){ alert('❌ WAJIB DIISI: Tanggal, Keterangan, Nominal!'); return; } let id=document.getElementById('pengId').value; let data={ tgl, resi: id ? document.getElementById('pResi').value : genResiPeng(tgl), ket, nominal:+nominal||0, kat:document.getElementById('pKat').value, fotoBarang:fotoBarangBase64, fotoKuitansi:fotoKuitansiBase64, inputBy:currentUser.nama }; if(id){ let i=pengs.findIndex(x=>x.id==id); data.fotoBarang=fotoBarangBase64||pengs[i].fotoBarang; data.fotoKuitansi=fotoKuitansiBase64||pengs[i].fotoKuitansi; data.resi=pengs[i].resi; if(currentUser.role==='OWNER') data.resi=document.getElementById('pResi').value; pengs[i]={...pengs[i],...data}; } else { data.id=Date.now(); pengs.unshift(data); } localStorage.setItem('riseink_peng_v22',JSON.stringify(pengs)); resetIdle(); resetPeng(); render(); renderPeng(); alert('✅ Pengeluaran tersimpan! Resi: '+data.resi); }
+function renderPeng(){ let dari=document.getElementById('pfDari').value, sampai=document.getElementById('pfSampai').value; let f=pengs.filter(t=>{ if(dari && t.tgl<dari) return false; if(sampai && t.tgl>sampai) return false; return true; }); let total=f.reduce((a,b)=>a+b.nominal,0); document.getElementById('infoPeng').innerText='Menampilkan '+f.length+' pengeluaran | Total: '+fmt(total); document.getElementById('listPeng').innerHTML=f.map(t=>`<div class="border rounded-xl p-3"><div class="flex justify-between"><b class="text-sm">${t.resi}</b><span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">${t.tgl} • ${t.kat}</span></div><p class="text-sm font-semibold mt-1">${t.ket}</p><p class="text-sm font-bold text-red-600">${fmt(t.nominal)}</p><div class="flex gap-2 mt-2">${t.fotoBarang?`<div><p class="text-[11px]">Foto Barang:</p><img src="${t.fotoBarang}" class="w-28 h-28 object-cover rounded-lg"></div>`:''} ${t.fotoKuitansi?`<div><p class="text-[11px]">Bukti Kuitansi:</p><img src="${t.fotoKuitansi}" class="w-28 h-28 object-cover rounded-lg"></div>`:''}</div><p class="text-[11px] text-gray-500 mt-1">Input: ${t.inputBy}</p>${currentUser.role==='OWNER' ? `<button onclick="hapusPeng(${t.id})" class="bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold mt-2">🗑 Hapus (Owner)</button>` : ''}</div>`).join('')||'<p class="text-center text-gray-400 text-sm py-4">Belum ada pengeluaran</p>'; }
+function hapusPeng(id){ if(confirm('Hapus pengeluaran ini?')){ pengs=pengs.filter(x=>x.id!=id); localStorage.setItem('riseink_peng_v22',JSON.stringify(pengs)); render(); renderPeng(); } }
+function exportPengExcel(){ if(currentUser.role==='ADMIN DATA'){ alert('Admin tidak bisa export Excel'); return; } let f=pengs; let rows=[['Tanggal','No Resi','Keterangan','Kategori','Nominal','Input By'],...f.map(t=>[t.tgl,t.resi,t.ket,t.kat,t.nominal,t.inputBy])]; let csv=rows.map(r=>r.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(',')).join('\n'); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'})); a.download='pengeluaran-riseink.csv'; a.click(); }
+function hitungGajiPreview(){ let nominal=+document.getElementById('gNominal').value||0; let persen=+document.getElementById('gPersenManager').value||0; let totalProfit=datas.reduce((a,b)=>a+(b.profit||0),0); let feeManager=Math.round(totalProfit*persen/100); document.getElementById('gajiPreview').innerHTML=`Gaji Pokok: ${fmt(nominal)} | Persenan Manager ${persen}% dari Profit ${fmt(totalProfit)} = ${fmt(feeManager)} | <b>Total Terima: ${fmt(nominal+feeManager)}</b>`; }
+document.getElementById('gNominal').addEventListener('input',hitungGajiPreview); document.getElementById('gPersenManager').addEventListener('input',hitungGajiPreview);
+function simpanGaji(){ if(!currentUser || currentUser.role!=='OWNER'){ alert('❌ Gaji & Persenan Manager hanya bisa diisi oleh Owner!'); return; } let tgl=document.getElementById('gTgl').value||todayStr(), nama=document.getElementById('gNama').value, jabatan=document.getElementById('gJabatan').value, nominal=+document.getElementById('gNominal').value||0, persen=+document.getElementById('gPersenManager').value||0, ket=document.getElementById('gKet').value; if(!nama||!nominal){ alert('❌ Wajib isi Nama & Gaji Pokok!'); return; } let totalProfit=datas.reduce((a,b)=>a+(b.profit||0),0); let feeManager=Math.round(totalProfit*persen/100); let data={id:Date.now(), tgl, nama, jabatan, nominal, persenManager:persen, feeManager, totalTerima:nominal+feeManager, ket, inputBy:'Owner'}; gajiList.unshift(data); localStorage.setItem('riseink_gaji_v22',JSON.stringify(gajiList)); document.getElementById('gNominal').value=''; document.getElementById('gPersenManager').value=''; document.getElementById('gKet').value=''; resetIdle(); renderGaji(); render(); alert('✅ Gaji tersimpan! '+nama+' Total: '+fmt(data.totalTerima)); }
+function simpanGajiAdminByManager(){ if(!currentUser || currentUser.role!=='MANAGER'){ alert('Hanya Manager yang bisa input Gaji Admin.'); return; } let tgl=document.getElementById('gTglAdmin').value||todayStr(), nominal=+document.getElementById('gNominalAdmin').value||0; if(!nominal){ alert('❌ Wajib isi Gaji Admin!'); return; } let data={id:Date.now(), tgl, nama:'Admin Data', jabatan:'Admin Data', nominal, persenManager:0, feeManager:0, totalTerima:nominal, ket:'Gaji Admin - Input oleh Manager '+currentUser.nama, inputBy:currentUser.nama}; gajiList.unshift(data); localStorage.setItem('riseink_gaji_v22',JSON.stringify(gajiList)); document.getElementById('gNominalAdmin').value=''; resetIdle(); renderGaji(); render(); alert('✅ Gaji Admin tersimpan! Nominal: '+fmt(nominal)); }
+function renderGaji(){ if(!currentUser) return; if(currentUser.role==='ADMIN DATA'){ document.getElementById('listGaji').innerHTML='<p class="text-center text-gray-400 text-sm py-4">Admin tidak bisa melihat Gaji.</p>'; document.getElementById('infoGaji').innerText='Admin tidak bisa melihat Gaji.'; return; } let totalGaji=gajiList.reduce((a,b)=>a+(b.totalTerima||0),0); document.getElementById('infoGaji').innerText=`Menampilkan ${gajiList.length} data gaji | Total Gaji: ${fmt(totalGaji)}`; document.getElementById('listGaji').innerHTML=gajiList.map(g=>`<div class="border rounded-xl p-3"><div class="flex justify-between"><b class="text-sm">${g.nama} - ${g.jabatan}</b><span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">${g.tgl}</span></div><p class="text-xs">Gaji Pokok: ${fmt(g.nominal)} | Persenan Manager: ${g.persenManager||0}% = ${fmt(g.feeManager||0)} | <b>Total Terima: ${fmt(g.totalTerima)}</b></p><p class="text-xs text-gray-500">Keterangan: ${g.ket||'-'} | Input oleh: ${g.inputBy}</p>${currentUser.role==='OWNER' ? `<button onclick="hapusGaji(${g.id})" class="bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold mt-2">🗑 Hapus (Owner)</button>` : ''}</div>`).join('')||'<p class="text-center text-gray-400 text-sm py-4">Belum ada data gaji</p>'; }
+function hapusGaji(id){ if(currentUser.role!=='OWNER'){ alert('Hanya Owner bisa hapus Gaji.'); return; } if(confirm('Hapus data gaji ini?')){ gajiList=gajiList.filter(x=>x.id!=id); localStorage.setItem('riseink_gaji_v22',JSON.stringify(gajiList)); renderGaji(); render(); } }
+function renderArtisStats(){ if(!currentUser || currentUser.role==='ADMIN DATA') return; let html=''; LIST_ARTIS.forEach(artis=>{ let list=datas.filter(x=>x.artis===artis); let omzet=list.reduce((a,b)=>a+b.harga,0); let feeBersih=list.reduce((a,b)=>a+(b.feeArtis||0),0); let profit=list.reduce((a,b)=>a+(b.profit||0),0); html+=`<div class="border rounded-xl p-3"><b class="text-sm">${artis}</b><p class="text-xs">Customer: ${list.length} | Omzet: <b>${fmt(omzet)}</b></p><p class="text-xs">Fee Artis Bersih: ${fmt(feeBersih)} | Profit Management: <b class="text-green-600">${fmt(profit)}</b></p></div>`; }); document.getElementById('artisStats').innerHTML=html; }
+function openPersenManager(id){ let t=datas.find(x=>x.id==id); managerEditId=id; document.getElementById('managerPersenBox').classList.remove('hidden'); document.getElementById('managerPersenInfo').innerText='Customer: '+t.nama+' | Resi: '+t.resi+' | Harga: '+fmt(t.harga)+' | Artis: '+t.artis+' | Tagihan: '+(t.tagihan||'-')+' | DP: '+fmt(t.dpBayar||0)+' | Sisa: '+fmt(t.sisa||0); document.getElementById('mPersenArtis').value=t.persenArtis||50; document.getElementById('mPersenBackup').value=t.persenBackup||0; hitungPersenManager(); document.getElementById('managerPersenBox').scrollIntoView({behavior:'smooth'}); }
+function hitungPersenManager(){ let t=datas.find(x=>x.id==managerEditId); if(!t) return; let h=t.harga; let pa=+document.getElementById('mPersenArtis').value||0; let pb=+document.getElementById('mPersenBackup').value||0; let persenMgmt=100-pa; let profit=h*persenMgmt/100; let kotor=h*pa/100; let backupFee=kotor*pb/100; let bersih=kotor-backupFee; document.getElementById('mRumus').innerHTML='Harga '+fmt(h)+' | Management '+persenMgmt+'% = <b>'+fmt(profit)+'</b> | Artis '+pa+'% = '+fmt(kotor)+' - Backup '+pb+'% ('+fmt(backupFee)+') = Artis Bersih <b>'+fmt(bersih)+'</b>'; return {pa,pb,persenMgmt,profit,kotor,backupFee,bersih}; }
+function simpanPersenManager(){ let i=datas.findIndex(x=>x.id==managerEditId); let c=hitungPersenManager(); datas[i].persenArtis=c.pa; datas[i].persenBackup=c.pb; datas[i].persenMgmt=c.persenMgmt; datas[i].feeArtisKotor=c.kotor; datas[i].feeBackup=c.backupFee; datas[i].feeArtis=c.bersih; datas[i].profit=c.profit; datas[i].inputByManager=currentUser.nama; localStorage.setItem('riseink_v22',JSON.stringify(datas)); document.getElementById('managerPersenBox').classList.add('hidden'); resetIdle(); render(); renderArtisStats(); alert('✅ Persenan Artis berhasil diubah oleh '+currentUser.nama+'!'); }
+function batalPersenManager(){ document.getElementById('managerPersenBox').classList.add('hidden'); managerEditId=null; }
+function inputSisaPelunasan(id){ let o=datas.find(x=>x.id==id); if(currentUser.role!=='MANAGER' && currentUser.role!=='OWNER'){ alert('Hanya Manager & Owner yang bisa isi Sisa Pelunasan.'); return; } if(o.tagihan==='LUNAS'){ alert('Sudah LUNAS, tidak ada sisa pelunasan.'); return; } let input=document.getElementById('sisaInput-'+id); let tambahan=+input.value||0; if(tambahan<=0){ alert('❌ Wajib isi Sisa Pelunasan > 0. Sisa saat ini: '+fmt(o.sisa)); return; } if(tambahan>o.sisa){ alert('❌ Sisa Pelunasan tidak boleh lebih besar dari Sisa: '+fmt(o.sisa)); return; } o.dpBayar+=tambahan; o.sisa=o.harga-o.dpBayar; if(o.sisa<=0){ o.sisa=0; o.tagihan='LUNAS'; o.dpBayar=o.harga; localStorage.setItem('riseink_v22',JSON.stringify(datas)); resetIdle(); render(); renderArtisStats(); alert('✅ Pelunasan berhasil! Status LUNAS. WA Lunas otomatis terkirim.'); kirimWA_Lunas(o); } else { o.tagihan='DP'; localStorage.setItem('riseink_v22',JSON.stringify(datas)); resetIdle(); render(); renderArtisStats(); alert('✅ Sisa Pelunasan '+fmt(tambahan)+' tersimpan. Sisa sekarang: '+fmt(o.sisa)+' (Masih DP)'); } }
+function requestEdit(id){ let t=datas.find(x=>x.id==id); if(currentUser.role==='OWNER'){ doEdit(id); return; } tambahNotif('edit', t.nama, t.resi); pendingAction='edit'; pendingId=id; document.getElementById('pinModalTarget').innerText='Mencoba EDIT: '+t.nama+' | Resi: '+t.resi+' | Oleh: '+currentUser.nama; document.getElementById('pinModal').classList.remove('hidden'); }
+function requestDelete(id){ let t=datas.find(x=>x.id==id); if(currentUser.role==='OWNER'){ if(confirm('Hapus data ini?')){ datas=datas.filter(x=>x.id!=id); localStorage.setItem('riseink_v22',JSON.stringify(datas)); render(); renderArtisStats(); } return; } tambahNotif('delete', t.nama, t.resi); pendingAction='delete'; pendingId=id; document.getElementById('pinModalTarget').innerText='Mencoba HAPUS: '+t.nama+' | Resi: '+t.resi+' | Oleh: '+currentUser.nama; document.getElementById('pinModal').classList.remove('hidden'); }
+function closePin(){ document.getElementById('pinModal').classList.add('hidden'); pendingAction=null; document.getElementById('pinInput').value=''; }
+function confirmPin(){ let input=document.getElementById('pinInput').value.trim(); if(input===OWNER_PIN){ document.getElementById('pinModal').classList.add('hidden'); document.getElementById('pinInput').value=''; let baru=pakaiPinOwner(); alert('✅ PIN Benar! Edit / Hapus diizinkan.\n\nPIN Owner lama sudah kadaluarsa & otomatis ter-update ke PIN baru di akun Owner: '+baru); if(pendingAction==='edit') doEdit(pendingId); if(pendingAction==='delete'){ datas=datas.filter(x=>x.id!=pendingId); localStorage.setItem('riseink_v22',JSON.stringify(datas)); render(); renderArtisStats(); alert('✅ Dihapus dengan PIN Owner.'); } pendingAction=null; resetIdle(); } else { alert('❌ PIN Salah! PIN hanya ada di akun Owner.'); } }
+function doEdit(id){ let t=datas.find(x=>x.id==id); document.getElementById('editId').value=t.id; document.getElementById('formTitle').innerText='✏️ Edit - '+t.resi; document.getElementById('tgl').value=t.tgl; document.getElementById('resi').value=t.resi; document.getElementById('nama').value=t.nama; document.getElementById('tglLahir').value=t.tglLahir; document.getElementById('hp').value=(t.hp||'').replace('+62',''); document.getElementById('email').value=t.email||''; document.getElementById('alamat').value=t.alamat||''; document.getElementById('harga').value=t.harga; document.getElementById('artis').value=t.artis; document.getElementById('backup').value=t.backup; document.getElementById('jenis').value=t.jenis; document.getElementById('tagihan').value=t.tagihan||'DP'; document.getElementById('dpBayar').value=t.dpBayar||0; document.getElementById('persenArtis').value=t.persenArtis||50; document.getElementById('persenBackup').value=t.persenBackup||0; hitungPersen(); onHargaOrTagihanChange(); showTab('input'); window.scrollTo({top:0,behavior:'smooth'}); }
+function getFiltered(){ let periode=document.getElementById('fPeriode').value, dari=document.getElementById('fDari').value, sampai=document.getElementById('fSampai').value; let fN=(document.getElementById('fNama').value||'').toLowerCase(), fA=document.getElementById('fArtis').value, fB=document.getElementById('fBackup').value, fT=document.getElementById('fTanggal').value, sort=document.getElementById('fSort').value; let now=new Date(); let awalBulan=new Date(now.getFullYear(),now.getMonth(),1), awalTahun=new Date(now.getFullYear(),0,1), seminggu=new Date(); seminggu.setDate(now.getDate()-7); let f=datas.filter(t=>{ if(periode==='bulan' && new Date(t.tgl)<awalBulan) return false; if(periode==='tahun' && new Date(t.tgl)<awalTahun) return false; if(periode==='minggu' && new Date(t.tgl)<seminggu) return false; if(dari && t.tgl<dari) return false; if(sampai && t.tgl>sampai) return false; if(fN && !t.nama.toLowerCase().includes(fN)) return false; if(fA && t.artis!==fA) return false; if(fB && t.backup!==fB) return false; if(fT && t.tgl!==fT) return false; return true; }); if(sort==='lama') f.sort((a,b)=> new Date(a.tgl)-new Date(b.tgl)); else if(sort==='harga') f.sort((a,b)=> b.harga-a.harga); else if(sort==='nama') f.sort((a,b)=> a.nama.localeCompare(b.nama)); else f.sort((a,b)=> new Date(b.tgl)-new Date(a.tgl)); return f; }
+function render(){ let f=getFiltered(); let isAdmin = currentUser && currentUser.role==='ADMIN DATA'; let isManager = currentUser && currentUser.role==='MANAGER'; let omzet=f.reduce((a,b)=>a+b.harga,0), profit=f.reduce((a,b)=>a+(b.profit||0),0); let totalPeng=pengs.reduce((a,b)=>a+b.nominal,0); let totalGaji=gajiList.reduce((a,b)=>a+(b.totalTerima||0),0); let belum=f.filter(x=>x.tagihan!=='LUNAS'); let totalSisa=belum.reduce((a,b)=>a+(b.sisa||0),0); let now=new Date(); let seminggu=new Date(); seminggu.setDate(now.getDate()-7); let awalBulan=new Date(now.getFullYear(),now.getMonth(),1); let awalTahun=new Date(now.getFullYear(),0,1); let omzetMinggu=datas.filter(x=>new Date(x.tgl)>=seminggu).reduce((a,b)=>a+b.harga,0); let omzetBulan=datas.filter(x=>new Date(x.tgl)>=awalBulan).reduce((a,b)=>a+b.harga,0); let omzetTahun=datas.filter(x=>new Date(x.tgl)>=awalTahun).reduce((a,b)=>a+b.harga,0); let warn=document.getElementById('warnBox'); if(currentUser && currentUser.role!=='ADMIN DATA'){ warn.classList.remove('hidden'); warn.innerHTML = belum.length>0 ? `<div class="bg-red-600 text-white rounded-xl p-3 text-xs font-bold">⚠️ PERINGATAN: ${belum.length} pelanggan BELUM LUNAS (DP)! Total Sisa: ${fmt(totalSisa)}</div>` : `<div class="bg-green-100 text-black rounded-xl p-3 text-xs font-bold">✅ Semua tagihan sudah LUNAS</div>`; } else { warn.classList.add('hidden'); } document.getElementById('dTotal').innerText=f.length; document.getElementById('dOmzet').innerText=fmt(omzet); document.getElementById('dProfit').innerText=fmt(profit); document.getElementById('dPengeluaran').innerText=fmt(totalPeng); document.getElementById('dSisa').innerText=fmt(profit-totalPeng-totalGaji); document.getElementById('dGajiTotal').innerText=fmt(totalGaji); document.getElementById('dOmzetMinggu').innerText=fmt(omzetMinggu); document.getElementById('dOmzetBulan').innerText=fmt(omzetBulan); document.getElementById('dOmzetTahun').innerText=fmt(omzetTahun); document.getElementById('infoRekap').innerText = isAdmin ? 'Menampilkan '+f.length+' customer (Tanpa Harga, Omzet, Profit).' : 'Menampilkan '+f.length+' customer | Omzet: '+fmt(omzet)+' | Profit: '+fmt(profit)+' | Sisa: '+fmt(totalSisa); document.getElementById('listData').innerHTML=f.map(t=>`<div class="bg-white text-black rounded-xl p-3 border-l-4 border-red-600"><div class="flex justify-between"><b class="text-sm">${t.resi}</b><span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">${t.tgl} • ${t.nama}</span></div><p class="text-sm font-semibold mt-1">Customer: ${t.nama} | HP: ${t.hp} | Lahir: ${t.tglLahir} | Email: ${t.email||'-'}</p><p class="text-xs text-gray-600">Tattoo: ${t.jenis||'-'} | Artis: ${t.artis} | Backup: ${t.backup||'-'} | Input: ${t.inputBy}</p>${isAdmin ? `<p class="text-xs text-gray-400 italic">Harga, Omzet, Profit disembunyikan untuk Admin.</p>` : `<p class="text-xs">Harga: <b>${fmt(t.harga)}</b> | Artis Bersih <b>${fmt(t.feeArtis||0)}</b> | Profit Mgmt: <b class="text-green-600">${fmt(t.profit||0)}</b></p><p class="text-xs font-bold">Tagihan: ${t.tagihan||'-'} | DP: ${fmt(t.dpBayar||0)} | Sisa: <span class="text-red-600">${fmt(t.sisa||0)}</span></p>`}${(!isAdmin && t.tagihan==='DP') ? `<div class="bg-blue-50 border rounded-lg p-2 mt-2"><p class="text-xs font-bold text-blue-800">💼 Kolom Manager - Wajib Isi Sisa Pelunasan DP:</p><p class="text-[11px]">Sisa: <b>${fmt(t.sisa)}</b></p><div class="flex gap-2 mt-1"><input id="sisaInput-${t.id}" type="number" placeholder="Isi Sisa Pelunasan Rp." class="flex-1 border rounded-lg p-2 text-sm"><button onclick="inputSisaPelunasan(${t.id})" class="bg-blue-600 text-white px-3 rounded-lg text-xs font-bold">💾 Simpan Pelunasan</button></div></div>` : ''}<p class="text-xs text-red-600 mt-1">Riwayat: ${t.penyakit}</p><div class="flex gap-2 mt-2 flex-wrap"><button onclick="printConsent(${t.id})" class="flex-1 bg-black text-white py-2 rounded-lg text-xs font-bold">🖨️ PRINT SURAT (TTD Auto Hapus)</button>${isAdmin ? '' : `<button onclick="printInvoice(${t.id})" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold">🧾 PRINT INVOICE</button>`}<button onclick="kirimWA_Wajib(datas.find(x=>x.id==${t.id}))" class="flex-1 bg-green-600 text-white py-2 rounded-lg text-xs font-bold">💬 KIRIM WA DRAF SURAT</button>${isManager ? `<button onclick="openPersenManager(${t.id})" class="flex-1 bg-yellow-400 py-2 rounded-lg text-xs font-bold">💰 INPUT PERSENAN ARTIS</button>` : `<button onclick="requestEdit(${t.id})" class="bg-yellow-400 py-2 px-3 rounded-lg text-xs font-bold">✏️ Edit (PIN Owner)</button>`}<button onclick="requestDelete(${t.id})" class="bg-red-100 text-red-600 py-2 px-3 rounded-lg text-xs font-bold">🗑 Hapus (PIN Owner)</button></div></div>`).join('')||'<p class="text-center text-gray-400 text-sm py-4">Belum ada data</p>'; }
+function resetFilter(){ ['fDari','fSampai','fNama','fTanggal'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fArtis').value=''; document.getElementById('fBackup').value=''; document.getElementById('fPeriode').value='all'; document.getElementById('fSort').value='baru'; render(); }
+function exportExcel(){ if(currentUser.role==='ADMIN DATA'){ alert('Admin tidak bisa export Excel.'); return; } let f=getFiltered(); let rows=[['Tanggal','No Resi','Nama','Tgl Lahir','HP','Email','Alamat','Harga','Artis','Backup','Profit','Tagihan','DP','Sisa','Jenis','Riwayat'],...f.map(t=>[t.tgl,t.resi,t.nama,t.tglLahir,t.hp,t.email||'',t.alamat||'',t.harga,t.artis,t.backup,t.profit||0,t.tagihan||'',t.dpBayar||0,t.sisa||0,t.jenis,t.penyakit])]; let csv=rows.map(r=>r.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(',')).join('\n'); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'})); a.download='rekap-riseink-v22.csv'; a.click(); }
+function formatTglIndo(tgl){ if(!tgl) return '-'; let d=new Date(tgl); let bulan=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']; return d.getDate()+' '+bulan[d.getMonth()]+' '+d.getFullYear(); }
+function kopSurat(){ return `<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px double #000;padding-bottom:10px"><div style="flex:1;text-align:left"><p style="font-size:11px;line-height:1.4;margin:0;color:#000"><b>RISEINK TATTOO</b><br>${ALAMAT}</p></div><div style="width:80px;height:80px;border:3px solid #dc2626;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;color:#fff;flex-shrink:0"><span style="font-weight:900;letter-spacing:2px;font-size:14px">RISE</span><span style="font-weight:900;letter-spacing:2px;font-size:14px;color:#ef4444">INK</span><span style="font-size:7px;letter-spacing:2px">TATTOO</span></div></div>`; }
+function printConsent(id){ let t=datas.find(x=>x.id==id); let ttdUntukPrint=t.ttd||''; let html=`<div style="font-family:Times New Roman,serif;max-width:700px;margin:0 auto;padding:20px;color:#000">${kopSurat()}<h3 style="text-align:center;text-decoration:underline;margin:15px 0 5px">SURAT PERNYATAAN KONSUMEN</h3><p style="text-align:center;font-size:12px;margin:0">No. Resi: <b>${t.resi}</b></p><p style="margin-top:15px">Saya yang bertanda tangan di bawah ini :</p><table style="font-size:14px;line-height:1.8"><tr><td style="width:130px">Tanggal</td><td>: ${formatTglIndo(t.tgl)}</td></tr><tr><td>Nama Customer</td><td>: <b>${t.nama}</b></td></tr><tr><td>Tanggal Lahir</td><td>: ${formatTglIndo(t.tglLahir)}</td></tr><tr><td>Nomor HP</td><td>: ${t.hp}</td></tr><tr><td>Email</td><td>: ${t.email||'-'}</td></tr><tr><td>Harga Tattoo</td><td>: ${fmt(t.harga)}</td></tr><tr><td>Tattoo Artis</td><td>: ${t.artis}</td></tr><tr><td>Jenis Tattoo</td><td>: ${t.jenis||'-'}</td></tr></table><p style="font-weight:bold;margin-bottom:5px">Dengan ini menyatakan bahwa :</p><ol style="font-size:13px;line-height:1.7;text-align:justify"><li>Saya dalam kondisi <b>SADAR, SEHAT JASMANI dan ROHANI</b>.</li><li>Saya memahami resiko infeksi, iritasi, alergi.</li><li>Saya telah memberikan informasi jujur, termasuk riwayat penyakit: <b>${t.penyakit}</b></li><li>Saya memahami hasil akhir dapat berbeda.</li><li>Saya bersedia mengikuti aftercare RiseInk.</li><li>Saya tidak akan menuntut RiseInk apabila kelalaian saya sendiri.</li><li>Saya berusia di atas 18 tahun / izin orang tua/wali.</li><li>Semua data benar dan proses tattoo atas keinginan sendiri.</li></ol><p>Demikian surat ini saya buat dengan sadar dan sebenar-benarnya.</p><div style="display:flex;justify-content:space-between;margin-top:20px;font-size:14px"><div></div><div style="text-align:center">Pontianak, ${formatTglIndo(t.tgl)}<br>${ttdUntukPrint ? `<img src="${ttdUntukPrint}" style="width:180px;height:80px;object-fit:contain">` : `<br><br><br><br>`}<br>_________________________<br><b>${t.nama}</b></div></div></div>`; let w=window.open('','_blank'); w.document.write(html); w.document.close(); setTimeout(()=>w.print(),300); if(ttdUntukPrint){ let idx=datas.findIndex(x=>x.id==id); if(idx>=0){ datas[idx].ttd=''; localStorage.setItem('riseink_v22',JSON.stringify(datas)); } clearTtd(); setTimeout(()=>{ alert('✅ Print Surat Berhasil. TTD sudah terhapus.'); render(); },800); } }
+function printInvoice(id){ let t=datas.find(x=>x.id==id); let html=`<div style="font-family:Arial;max-width:600px;margin:0 auto;padding:25px;color:#000">${kopSurat()}<h3 style="text-align:center">INVOICE / KWITANSI</h3><table style="width:100%;font-size:14px;line-height:2"><tr><td>No. Resi</td><td style="text-align:right"><b>${t.resi}</b></td></tr><tr><td>Tanggal</td><td style="text-align:right">${formatTglIndo(t.tgl)}</td></tr><tr><td>Nama Customer</td><td style="text-align:right"><b>${t.nama}</b></td></tr></table><table border="1" cellpadding="12" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:10px;font-size:14px"><tr style="background:#000;color:#fff"><th>Deskripsi</th><th style="text-align:right">Jumlah</th></tr><tr><td>Jasa Pembuatan Tattoo<br><small>${t.jenis||'Tattoo'}</small><br><small>DP: ${fmt(t.dpBayar||0)} | Sisa: ${fmt(t.sisa||0)} | Status: ${t.tagihan||'-'}</small></td><td style="text-align:right">${fmt(t.harga)}</td></tr><tr><td style="text-align:right"><b>TOTAL</b></td><td style="text-align:right"><b>${fmt(t.harga)}</b></td></tr></table><p style="font-size:12px">Transfer: <b>BCA A/N Sekundus 0123456789</b><br>${ALAMAT}</p><div style="display:flex;justify-content:space-between;margin-top:40px;text-align:center;font-size:13px"><div>Customer,<br><br>__________________<br>${t.nama}</div><div>Pontianak, ${formatTglIndo(t.tgl)}<br>RiseInk Tattoo<br><br><br>__________________<br>Admin / Manager</div></div></div>`; let w=window.open('','_blank'); w.document.write(html); w.document.close(); setTimeout(()=>w.print(),300); }
+let c=document.getElementById('ttd'), ctx=c.getContext('2d'), draw=false;
+function pos(e){let r=c.getBoundingClientRect();let t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};
+c.addEventListener('mousedown',e=>{draw=true;ttdDrawn=true;ctx.beginPath();let p=pos(e);ctx.moveTo(p.x,p.y)});
+c.addEventListener('mousemove',e=>{if(draw){let p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()}});
+c.addEventListener('mouseup',()=>draw=false);
+c.addEventListener('touchstart',e=>{draw=true;ttdDrawn=true;let p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});
+c.addEventListener('touchmove',e=>{e.preventDefault();if(draw){let p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()}},{passive:false});
+function clearTtd(){ctx.clearRect(0,0,c.width,c.height);ttdDrawn=false;}
+let cm=document.getElementById('ttdManager'), ctxm=cm.getContext('2d'), drawm=false;
+function posm(e){let r=cm.getBoundingClientRect();let t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};
+cm.addEventListener('mousedown',e=>{drawm=true;ctxm.beginPath();let p=posm(e);ctxm.moveTo(p.x,p.y)});
+cm.addEventListener('mousemove',e=>{if(drawm){let p=posm(e);ctxm.lineTo(p.x,p.y);ctxm.stroke()}});
+cm.addEventListener('mouseup',()=>drawm=false);
+cm.addEventListener('touchstart',e=>{drawm=true;let p=posm(e);ctxm.beginPath();ctxm.moveTo(p.x,p.y)});
+cm.addEventListener('touchmove',e=>{e.preventDefault();if(drawm){let p=posm(e);ctxm.lineTo(p.x,p.y);ctxm.stroke()}},{passive:false});
+function clearTtdManager(){ctxm.clearRect(0,0,cm.width,cm.height);}
+document.getElementById('tgl').value=todayStr(); document.getElementById('resi').value=genResi(document.getElementById('tgl').value);
+document.getElementById('pTgl').value=todayStr(); document.getElementById('pResi').value=genResiPeng(document.getElementById('pTgl').value);
+document.getElementById('gTgl').value=todayStr(); document.getElementById('gTglAdmin').value=todayStr();
+document.getElementById('loginJamInfo').innerText='Jam sekarang: '+new Date().toLocaleString('id-ID')+' WIB - Admin 1 jam tanpa aktivitas auto logout.';
+document.getElementById('hp').addEventListener('blur',()=>{let v=document.getElementById('hp').value;if(v){let n=normalizeHP(v);document.getElementById('hp').value=n.replace('+62','');}});
+render(); renderPeng(); renderGaji(); renderArtisStats(); renderAbsen(); onHargaOrTagihanChange();
+</script>
+</body>
+</html>
